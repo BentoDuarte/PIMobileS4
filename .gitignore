@@ -19,3 +19,4 @@ local.properties
 
 # NdK
 obj/
+/.idea/vcs.xml
