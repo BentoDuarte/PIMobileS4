@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/surface" android:fillViewport="true">
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"><TextView android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:text="Detalhes da ordem"
+    android:textSize="28sp" android:textColor="@color/ink"
+    android:layout_marginBottom="12dp"/><TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="" android:textSize="22sp"
+    android:textColor="@color/ink"
+    android:layout_marginBottom="12dp"
+    android:id="@+id/tituloDetalhe"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" android:textSize="16sp"
+        android:textColor="@color/ink"
+        android:layout_marginBottom="12dp"
+        android:id="@+id/dados"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/editar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp" android:text="Editar ordem"
+        android:layout_marginTop="8dp"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="Alterar status"
+        android:layout_marginTop="8dp"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pdf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="Gerar PDF"
+        android:layout_marginTop="8dp"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/excluir"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="Excluir ordem"
+        android:layout_marginTop="8dp"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/voltar" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp"
+    android:text="Voltar para a lista" android:layout_marginTop="8dp"/></LinearLayout>
+</ScrollView>
