@@ -1,0 +1,48 @@
+
+name: Validacao Android
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    name: Validar Android
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Permissao Gradle
+        run: chmod +x gradlew
+
+      - name: Android Lint
+        run: ./gradlew lintDebug
+
+      - name: Testes e cobertura
+        run: ./gradlew testDebugUnitTestCoverage
+
+      - name: Compilacao
+        run: ./gradlew assembleDebug
