@@ -1,0 +1,18 @@
+#!/bin/sh
+set -eu
+
+git diff --cached --check
+
+if git diff --cached --quiet -- app/ gradle/ gradlew gradlew.bat '*.gradle.kts' gradle.properties; then
+    exit 0
+fi
+
+if ! git diff --quiet -- app/ gradle/ gradlew gradlew.bat '*.gradle.kts' gradle.properties; then
+    echo "Inclua ou guarde as alterações Android fora do stage antes de rodar o lint." >&2
+    exit 1
+fi
+
+case "$(uname -s)" in
+    MINGW*|MSYS*) exec ./gradlew.bat :app:lintDebug ;;
+    *) exec sh ./gradlew :app:lintDebug ;;
+esac

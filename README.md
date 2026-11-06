@@ -1,3 +1,5 @@
+[![CI](https://github.com/BentoDuarte/PIMobileS4/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/BentoDuarte/PIMobileS4/actions/workflows/ci.yml)
+
 # PIMobileS4 — base Android de ordens de serviço
 
 Aplicativo nativo Android em **Java + layouts XML**, construído sobre o projeto enviado. Não usa páginas HTML ou JSF.
@@ -116,3 +118,15 @@ Ao abrir no Android Studio, confira:
 7. Fechar e reabrir o aplicativo preserva os registros; sair volta ao login.
 8. Gerar PDF com descrição longa: conferir quebras de linha, páginas, acentos e destino.
 9. Girar aparelho, abrir teclado e testar campos/botões em tela pequena.
+
+## Qualidade e integração contínua
+
+Use JDK 17 e instale a plataforma Android 36 e o Build Tools 36.0.0 pelo SDK Manager. Configure o SDK no Android Studio ou pela variável `ANDROID_HOME`.
+
+Ative o hook versionado em cada clone com `git config --local core.hooksPath .githooks`. O hook verifica espaços no conteúdo em stage e executa Android Lint quando há mudanças no projeto Android.
+
+No Windows, rode `./gradlew.bat :app:lintDebug :app:testDebugUnitTest :app:assembleDebug` no PowerShell. No Linux e macOS, rode `sh ./gradlew :app:lintDebug :app:testDebugUnitTest :app:assembleDebug`. O teste instrumentado existente pode ser executado com `:app:connectedDebugAndroidTest` em um emulador ou dispositivo.
+
+Crie uma branch curta, faça commits descritivos (por exemplo, `fix: corrige a exportação de ordens`) e abra um pull request para a `main`. O job `test` executa lint, testes unitários e build. Os relatórios ficam disponíveis na execução do GitHub Actions.
+
+A configuração de proteção está em `.github/rulesets/main.json`. Depois de uma execução do job `test`, importe o arquivo em **Settings → Rules → Rulesets**. A regra exige PR e check verde e atualizado, bloqueia force push e exclusão da `main` e não lista exceções. A política exige zero aprovações para permitir contribuição individual.
