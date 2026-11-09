@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /usuarios/{uid} {
+      function dono() {
+        return request.auth != null && request.auth.uid == uid;
+      }
+      match /ordens/{id} {
+        allow read, create, update, delete: if dono();
+      }
+      match /config/sequencia {
+        allow read, create, update: if dono();
+      }
+    }
+  }
+}
