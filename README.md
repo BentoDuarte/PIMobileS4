@@ -111,3 +111,18 @@ Ao abrir no Android Studio, confira:
 7. Fechar e reabrir o aplicativo preserva os registros; sair volta ao login.
 8. Gerar PDF com descrição longa: conferir quebras de linha, páginas, acentos e destino.
 9. Girar aparelho, abrir teclado e testar campos/botões em tela pequena.
+
+## Rodando com Docker (Backend / API da Equipe)
+
+Para garantir que a API do projeto rode de forma idêntica em qualquer ambiente de desenvolvimento ou produção, utilizamos o Docker com um servidor de produção (`gunicorn`)[cite: 17, 22].
+
+### 1. Construir a imagem Docker
+Na raiz do projeto (onde o `Dockerfile` está localizado), execute o comando de *build*[cite: 18]:
+
+docker build -t opstrack-api:0.1.0 .
+
+2. Executar o containerSuba o container em segundo plano, mapeando a porta 8000 do seu ambiente para a porta 8000 do container:   Bashdocker run -d --name opstrack -p 8000:8000 opstrack-api:0.1.0
+3. Verificar se a API está respondendoTeste o endpoint de status da aplicação:   Bashcurl localhost:8000/status
+
+(A resposta esperada deve ser {"status":"ok"})   4. Como ver os logs e parar o containerVisualizar logs em tempo real:Bashdocker logs -f opstrack
+Parar e remover o container:Bashdocker rm -f opstrack
