@@ -14,6 +14,8 @@
         <activity android:name=".ui.ListaOrdensActivity" android:exported="false"/>
         <activity android:name=".ui.FormularioOrdemActivity" android:exported="false"/>
         <activity android:name=".ui.DetalhesOrdemActivity" android:exported="false"/>
+        <activity android:name=".ui.ContaActivity" android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
