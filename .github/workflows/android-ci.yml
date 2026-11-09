@@ -1,0 +1,78 @@
+
+name: Validacao Android
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    name: Validar Android
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Permissao Gradle
+        run: chmod +x gradlew
+
+      - name: Definir versao do APK
+        if: github.event_name == 'push'
+        run: |
+          echo "ANDROID_VERSION_CODE=$((GITHUB_RUN_NUMBER + 1))" >> "$GITHUB_ENV"
+          echo "ANDROID_VERSION_NAME=1.0.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
+
+      - name: Configurar Firebase para o APK
+        if: github.event_name == 'push'
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "$GOOGLE_SERVICES_JSON" ]; then
+            printf '%s\n' "$GOOGLE_SERVICES_JSON" > app/google-services.json
+          else
+            echo "::warning::GOOGLE_SERVICES_JSON ausente. O APK sera gerado sem acesso ao Firebase."
+          fi
+
+      - name: Android Lint
+        run: ./gradlew lintDebug
+
+      - name: Testes unitarios
+        run: ./gradlew testDebugUnitTest
+
+      - name: Compilacao
+        run: ./gradlew assembleDebug
+
+      - name: Disponibilizar APK versionado
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pimobiles4-${{ env.ANDROID_VERSION_NAME }}-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
