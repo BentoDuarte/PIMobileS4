@@ -21,3 +21,6 @@ local.properties
 # NdK
 obj/
 /.idea/vcs.xml
+
+app.py
+requirements.txt
