@@ -1,0 +1,14 @@
+.git
+.github
+venv
+__pycache__
+*.pyc
+.pytest_cache
+.coverage
+htmlcov
+tests
+.flake8
+pytest.ini
+requirements-dev.txt
+README.md
+.env
