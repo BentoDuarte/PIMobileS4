@@ -6,7 +6,7 @@ Aplicativo nativo Android em **Java + layouts XML**, construído sobre o projeto
 
 | Fluxo pedido | Implementação |
 |---|---|
-| Login | MainActivity + activity_main.xml; acesso demonstrativo |
+| Login | MainActivity + activity_main.xml; Firebase Authentication por e-mail e senha |
 | Lista de ordens | ListaOrdensActivity + activity_lista.xml; busca por número, título e cliente, filtro de status e estado vazio |
 | Detalhes | DetalhesOrdemActivity + activity_detalhes.xml |
 | Criar ordem | FormularioOrdemActivity + activity_formulario.xml |
@@ -21,7 +21,7 @@ Aplicativo nativo Android em **Java + layouts XML**, construído sobre o projeto
 2. Use o JDK recomendado pelo Android Studio para o Gradle/AGP já configurado no projeto. O Java 11 em `compileOptions` é o nível do código, não a versão obrigatória do JDK que executa o Gradle.
 3. Sincronize o Gradle. A sincronização inicial precisa acessar os servidores de distribuição e dependências; o projeto mantém as versões recebidas no ZIP original.
 4. Rode o módulo `app` em aparelho ou emulador Android 7.0/API 24 ou superior.
-5. Entre com **demo@os.com** e **demo123**. Crie uma ordem para preencher a lista.
+5. Entre com uma conta criada no Firebase Authentication. Crie uma ordem para preencher a lista.
 6. Para PDF, abra a ordem e escolha Gerar PDF; o Android permite escolher nome e destino. Abra/compartilhe o arquivo pelo gerenciador de arquivos após salvar.
 
 Não é necessário instalar o aplicativo desktop do ChatGPT para abrir este projeto. Android Studio e o SDK Android continuam necessários para compilar o aplicativo.
@@ -49,7 +49,7 @@ Os models são objetos do aplicativo/DTOs, **sem anotações JPA**. Entidades do
 
 - `model/`: dados e enums.
 - `data/OrdemRepository.java`: contrato de acesso às ordens.
-- `data/LocalOrdemRepository.java`: implementação com JSON em SharedPreferences privadas do aplicativo.
+- `data/FirebaseOrdemRepository.java`: operações assíncronas no Cloud Firestore.
 - `ui/`: Activities das telas, navegação e validação de formulário.
 - `util/OrdemPdf.java`: PDF A4 com quebra de linhas e paginação.
 - `res/layout/`: interfaces XML editáveis no Android Studio.
@@ -66,48 +66,43 @@ O PDF é geral: cita Android, Java, MySQL, autenticação, CRUD, estoque e relat
 - Datas são armazenadas como epoch em milissegundos e exibidas no fuso do aparelho.
 - Criar e editar compartilham a mesma tela para manter a consistência.
 - Alteração de status, exclusão e geração de PDF partem dos detalhes, sem exigir Activities separadas.
-- Os dados começam vazios e persistem entre execuções. Sair encerra a sessão demonstrativa e preserva ordens.
+- Os dados começam vazios e persistem entre execuções. Sair encerra a sessão do Firebase e preserva ordens.
 - Os models de estoque são uma preparação; **não há telas, movimentação ou baixa automática de estoque** nesta entrega. Produtos e itens ainda não são ligados ao CRUD de ordens.
 
-## Limites desta primeira versão
+## Configuração do Firebase
 
-- Login é demonstrativo, com credenciais públicas fixas; não autentica no servidor nem estabelece permissões reais.
-- Não há API Java, conexão MySQL, sincronização, cadastro de usuários ou operação multiusuário.
-- Ordens são guardadas apenas no aparelho. Limpar dados/desinstalar pode apagar o conteúdo; esta persistência é adequada ao protótipo, não a uma base operacional.
-- SharedPreferences não é armazenamento criptografado; use dados fictícios nesta etapa.
-- As telas usam dados de cliente embutidos na OS; um cadastro compartilhado de clientes fica para integração.
-- Exporta PDF para salvar; compartilhamento direto dentro do aplicativo ainda não foi implementado.
-- Tema claro inicial; identidade visual final deve ser alinhada com UX/UI.
+1. Registre o app Android com o pacote `com.example.pimobiles4` e coloque o arquivo `google-services.json` em `app/`.
+2. No Firebase Authentication, habilite **E-mail/senha** e crie uma conta em **Usuários**.
+3. Crie o banco padrão do Cloud Firestore em modo de produção. Na aba **Regras**, publique as regras de `firestore.rules` para este app.
+4. Compile o projeto e entre com a conta criada.
 
-## Integração Java + MySQL
+Cada conta tem suas próprias ordens em `usuarios/{uid}/ordens`. O número da OS é gerado por conta. Os registros locais do protótipo continuam no armazenamento original e não são importados automaticamente. O PDF é gerado no aparelho a partir dos dados da ordem.
 
-O caminho previsto é **Android → API REST Java → MySQL**. Não coloque credenciais de MySQL no aplicativo nem conecte o Android diretamente ao banco.
+## Validação automática de commits e PRs
 
-Uma implementação remota de OrdemRepository poderá substituir LocalOrdemRepository. As requisições devem ser assíncronas, com estados de carregamento e tratamento de falhas. A interface atual é síncrona para o protótipo e precisa ser adaptada para chamadas de rede.
+Para executar os testes unitários antes de cada commit, rode uma vez por clone:
 
-Contrato sugerido para discutir com o grupo (ainda não implementado):
+```sh
+git config --local core.hooksPath .githooks
+```
 
-| Método/rota | Ação |
-|---|---|
-| POST /auth/login | Validar credenciais e devolver sessão/token |
-| GET /ordens | Listar com busca, status e paginação |
-| GET /ordens/{id} | Consultar detalhes |
-| POST /ordens | Criar ordem |
-| PUT /ordens/{id} | Editar dados |
-| PATCH /ordens/{id}/status | Alterar status com regra e histórico |
-| DELETE /ordens/{id} | Excluir conforme permissões |
-| GET /produtos | Consultar produtos/estoque |
-| POST /movimentacoes-estoque | Registrar entrada/saída em transação |
+O gancho usa o Gradle e bloqueia o commit se os testes falharem. Ele testa os arquivos como estão no disco, incluindo mudanças ainda fora do commit.
 
-O servidor deve validar os campos e as permissões, gerar IDs, controlar o saldo sem deixá-lo negativo, armazenar senhas com hash e definir como conflitos de edição serão tratados. BigDecimal representa dinheiro; enum deve ter um código estável no contrato. Definir também o significado de exclusão e a relação entre conclusão/cancelamento de OS e consumo de estoque.
+Nos PRs para `main`, o GitHub Actions executa `lintDebug`, `testDebugUnitTest` e `assembleDebug` sobre o código enviado. Para exigir essa validação antes do merge, configure o check **Validar Android** como obrigatório na proteção da `main`.
+
+## Versão automática na main
+
+O GitHub Actions valida os PRs e roda novamente a cada atualização da `main`, inclusive após merges. Depois de passar na validação e gerar o APK, o workflow publica uma tag Git no commit validado com o mesmo nome da versão do APK. O APK de depuração aparece em **Actions → Validacao Android → Artifacts**.
+
+A execução de número `N` usa a tag `1.1.N`, `versionName = 1.1.N` e `versionCode = N + 1`. Os números podem pular porque os PRs também usam o contador do workflow. Reexecutar o mesmo build mantém sua versão.
+
+Para que o APK do GitHub Actions acesse o Firebase, adicione o conteúdo completo do arquivo `app/google-services.json` ao secret `GOOGLE_SERVICES_JSON` em **Settings → Secrets and variables → Actions**. O workflow usa o secret apenas nas execuções da `main`.
 
 ## Validação e roteiro de conferência
 
-Os XMLs, referências locais de recursos e declaração das Activities foram conferidos por script. A compilação `:app:assembleDebug` foi tentada, mas a rede do ambiente impediu baixar o Gradle (`Network is unreachable`). O ambiente também não contém SDK Android nem emulador; **não foi gerado APK e não houve execução das telas**.
-
 Ao abrir no Android Studio, confira:
 
-1. Login inválido mostra erro; credenciais demo abrem a lista vazia.
+1. Login inválido mostra erro; uma conta válida abre a lista de ordens.
 2. Salvar sem os campos obrigatórios mostra erro; e-mail informado inválido também.
 3. Criar uma OS, buscar por cliente e filtrar por status.
 4. Editar sem alterar ID/data de criação; conferir atualização nos detalhes.
