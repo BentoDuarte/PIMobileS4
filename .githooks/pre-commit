@@ -1,0 +1,12 @@
+#!/bin/sh
+
+echo "Executando os testes unitários do Android..."
+
+case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*)
+        exec ./gradlew.bat :app:testDebugUnitTest
+        ;;
+    *)
+        exec sh ./gradlew :app:testDebugUnitTest
+        ;;
+esac
