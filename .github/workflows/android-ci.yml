@@ -21,6 +21,8 @@ jobs:
   validar:
     name: Validar Android
     runs-on: ubuntu-latest
+    outputs:
+      versao: ${{ steps.versao.outputs.nome }}
 
     steps:
       - name: Checkout
@@ -44,10 +46,13 @@ jobs:
         run: chmod +x gradlew
 
       - name: Definir versao do APK
+        id: versao
         if: github.event_name == 'push'
         run: |
+          versao="1.1.${GITHUB_RUN_NUMBER}"
           echo "ANDROID_VERSION_CODE=$((GITHUB_RUN_NUMBER + 1))" >> "$GITHUB_ENV"
-          echo "ANDROID_VERSION_NAME=1.0.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
+          echo "ANDROID_VERSION_NAME=$versao" >> "$GITHUB_ENV"
+          echo "nome=$versao" >> "$GITHUB_OUTPUT"
 
       - name: Configurar Firebase para o APK
         if: github.event_name == 'push'
@@ -76,3 +81,22 @@ jobs:
           name: pimobiles4-${{ env.ANDROID_VERSION_NAME }}-debug
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          overwrite: true
+
+  publicar-tag:
+    name: Publicar tag de versao
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: validar
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Criar tag no commit validado
+        env:
+          VERSAO: ${{ needs.validar.outputs.versao }}
+        run: |
+          test -n "$VERSAO"
+          git push origin "$GITHUB_SHA:refs/tags/$VERSAO"
