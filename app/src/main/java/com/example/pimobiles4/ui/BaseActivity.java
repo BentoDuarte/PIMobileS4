@@ -9,10 +9,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
 import com.example.pimobiles4.MainActivity;
 import com.example.pimobiles4.R;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 public abstract class BaseActivity extends AppCompatActivity {
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
-        if(!getSharedPreferences("sessao",MODE_PRIVATE).getBoolean("demo",false)) {
+        if(com.google.firebase.FirebaseApp.getApps(this).isEmpty()
+                || com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() == null) {
             startActivity(new Intent(this,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK)); finish();
         }
     }
@@ -25,5 +27,29 @@ public abstract class BaseActivity extends AppCompatActivity {
             v.setPadding(left+s.left,top+s.top,right+s.right,bottom+s.bottom); return w;
         });
     }
-    protected void aviso(Exception e) { Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show(); }
+    protected String mensagemDeErro(Exception erro) {
+        if (erro instanceof FirebaseFirestoreException) {
+            switch (((FirebaseFirestoreException) erro).getCode()) {
+                case PERMISSION_DENIED:
+                    return "Sem permissão para acessar as ordens. Confira as regras do Firestore.";
+                case UNAUTHENTICATED:
+                    return "Sessão inválida. Saia e entre novamente.";
+                case UNAVAILABLE:
+                case DEADLINE_EXCEEDED:
+                    return "Não foi possível conectar ao banco. Confira a internet e tente novamente.";
+                case NOT_FOUND:
+                    return "A ordem não foi encontrada.";
+                default:
+                    return "Não foi possível concluir a operação no banco.";
+            }
+        }
+        if (erro instanceof java.io.IOException && erro.getMessage() != null) {
+            return erro.getMessage();
+        }
+        return "Não foi possível concluir a operação.";
+    }
+
+    protected void aviso(Exception erro) {
+        Toast.makeText(this, mensagemDeErro(erro), Toast.LENGTH_LONG).show();
+    }
 }

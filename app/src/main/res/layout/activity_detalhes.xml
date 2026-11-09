@@ -4,23 +4,34 @@
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp"><TextView android:layout_width="match_parent"
+    android:padding="20dp">
+<TextView android:layout_width="match_parent"
     android:layout_height="wrap_content" android:text="Detalhes da ordem"
-    android:textSize="28sp" android:textColor="@color/ink"
-    android:layout_marginBottom="12dp"/><TextView
+    android:textSize="28sp" android:textStyle="bold" android:accessibilityHeading="true" android:textColor="@color/ink"
+    android:layout_marginBottom="12dp"/>
+<TextView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="" android:textSize="22sp"
+    android:textSize="22sp"
+    android:textStyle="bold"
     android:textColor="@color/ink"
     android:layout_marginBottom="12dp"
     android:id="@+id/tituloDetalhe"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="" android:textSize="16sp"
+        android:textSize="16sp"
+        android:lineSpacingExtra="4dp"
         android:textColor="@color/ink"
         android:layout_marginBottom="12dp"
         android:id="@+id/dados"/>
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:id="@+id/recarregarDetalhes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tentar novamente"
+        android:visibility="gone" />
     <com.google.android.material.button.MaterialButton
         android:id="@+id/editar"
         android:layout_width="match_parent"
@@ -28,27 +39,28 @@
         android:minHeight="48dp" android:text="Editar ordem"
         android:layout_marginTop="8dp"/>
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/status"
+        style="@style/Widget.Material3.Button.OutlinedButton" android:id="@+id/status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
         android:text="Alterar status"
         android:layout_marginTop="8dp"/>
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/pdf"
+        style="@style/Widget.Material3.Button.OutlinedButton" android:id="@+id/pdf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
         android:text="Gerar PDF"
         android:layout_marginTop="8dp"/>
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/excluir"
+        style="@style/Widget.Material3.Button.OutlinedButton" android:textColor="?attr/colorError" android:id="@+id/excluir"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
         android:text="Excluir ordem"
         android:layout_marginTop="8dp"/>
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/voltar" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp"
-    android:text="Voltar para a lista" android:layout_marginTop="8dp"/></LinearLayout>
+        style="@style/Widget.Material3.Button.OutlinedButton" android:id="@+id/voltar" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp"
+    android:text="Voltar para a lista" android:layout_marginTop="8dp"/>
+</LinearLayout>
 </ScrollView>
