@@ -3,6 +3,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.activity.EdgeToEdge;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -51,5 +52,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void aviso(Exception erro) {
         Toast.makeText(this, mensagemDeErro(erro), Toast.LENGTH_LONG).show();
+    }
+
+    protected void confirmarExclusao(long id, Runnable excluir) {
+        new AlertDialog.Builder(this)
+                .setTitle("Excluir OS #" + id + "?")
+                .setMessage("A ordem será removida da sua conta.")
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton("Excluir", (dialogo, botao) -> excluir.run())
+                .show();
     }
 }
