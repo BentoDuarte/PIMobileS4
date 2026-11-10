@@ -4,24 +4,14 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import android.content.Intent;
 import android.widget.EditText;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.activity.EdgeToEdge;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.graphics.Insets;
 import com.example.pimobiles4.ui.ListaOrdensActivity;
 import com.example.pimobiles4.ui.ContaActivity;
-public class MainActivity extends AppCompatActivity {
+import com.example.pimobiles4.ui.TelaActivity;
+public class MainActivity extends TelaActivity {
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
         if (FirebaseApp.getApps(this).size() > 0 && FirebaseAuth.getInstance().getCurrentUser() != null) { abrir(); return; }
-        EdgeToEdge.enable(this); setContentView(R.layout.activity_main);
-        android.view.View root=findViewById(R.id.main);
-        final int left=root.getPaddingLeft(),top=root.getPaddingTop(),right=root.getPaddingRight(),bottom=root.getPaddingBottom();
-        ViewCompat.setOnApplyWindowInsetsListener(root,(v,w)->{
-            Insets s=w.getInsets(WindowInsetsCompat.Type.systemBars()|WindowInsetsCompat.Type.ime());
-            v.setPadding(left+s.left,top+s.top,right+s.right,bottom+s.bottom);return w;
-        });
+        tela(R.layout.activity_main);
         android.view.View botao = findViewById(R.id.entrar);
         android.view.View criarConta = findViewById(R.id.criarConta);
         android.view.View esqueciSenha = findViewById(R.id.esqueciSenha);
