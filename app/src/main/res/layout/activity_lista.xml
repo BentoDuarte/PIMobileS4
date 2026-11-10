@@ -44,13 +44,13 @@
         android:id="@+id/filtro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp" />
+        android:minHeight="?attr/tamanhoAlvoToque" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/nova"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
+        android:minHeight="?attr/tamanhoAlvoToque"
         android:text="@string/nova_ordem"
         app:icon="@drawable/ic_adicionar"
         app:iconGravity="textStart" />
@@ -68,6 +68,7 @@
         style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="?attr/tamanhoAlvoToque"
         android:text="@string/tentar_novamente"
         android:visibility="gone" />
 

@@ -74,7 +74,7 @@
                 android:id="@+id/entrar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="?attr/tamanhoAlvoToque"
                 android:text="@string/login_entrar"
                 app:icon="@drawable/ic_entrar"
                 app:iconGravity="textStart" />
@@ -84,7 +84,7 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="?attr/tamanhoAlvoToque"
                 android:text="@string/login_criar"
                 app:icon="@drawable/ic_adicionar"
                 app:iconGravity="textStart" />
@@ -94,7 +94,7 @@
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="?attr/tamanhoAlvoToque"
                 android:text="@string/login_recuperar" />
         </LinearLayout>
     </LinearLayout>
