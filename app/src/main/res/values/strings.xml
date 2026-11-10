@@ -1,1 +1,9 @@
-<resources><string name="app_name">Ordens de Serviço</string></resources>
+<resources>
+    <string name="app_name">Ordens de Serviço</string>
+    <string name="marca_app">Serviço Mobile</string>
+    <string name="acessibilidade">Acessibilidade</string>
+    <string name="texto_ampliado">Texto ampliado (+20%)</string>
+    <string name="alto_contraste">Alto contraste</string>
+    <string name="aplicar">Aplicar</string>
+    <string name="cancelar">Cancelar</string>
+</resources>

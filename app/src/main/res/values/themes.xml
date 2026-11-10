@@ -4,8 +4,25 @@
     <style name="Base.Theme.PIMobileS4"
         parent="Theme.Material3.Light.NoActionBar">
 
-        <item name="colorPrimary">#2456B8</item>
-        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">#F2E1D2</item>
+        <item name="colorOnPrimaryContainer">@color/ink</item>
+        <item name="colorSecondary">@color/terra</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">#F7E5D8</item>
+        <item name="colorOnSecondaryContainer">@color/ink</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/ink</item>
+        <item name="colorSurfaceVariant">@color/creme</item>
+        <item name="colorSurfaceContainer">@color/creme</item>
+        <item name="colorOnSurfaceVariant">#624E43</item>
+        <item name="colorOutline">@color/contorno</item>
+        <item name="colorOutlineVariant">#DED0C5</item>
+        <item name="colorError">#9D241F</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="android:colorBackground">?attr/colorSurface</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="android:fontFamily">sans</item>
         <item name="android:windowLightStatusBar">true</item>
 
@@ -13,5 +30,18 @@
 
     <style name="Theme.PIMobileS4"
         parent="Base.Theme.PIMobileS4" />
+
+    <style name="Theme.PIMobileS4.Contraste" parent="Base.Theme.PIMobileS4">
+        <item name="colorPrimary">#321B11</item>
+        <item name="colorPrimaryContainer">#E9D2BF</item>
+        <item name="colorOnPrimaryContainer">@color/black</item>
+        <item name="colorSecondary">#51260F</item>
+        <item name="colorOnSecondaryContainer">@color/black</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">#241A15</item>
+        <item name="colorOutline">#49372C</item>
+        <item name="colorOutlineVariant">#756053</item>
+        <item name="colorError">#75140F</item>
+    </style>
 
 </resources>

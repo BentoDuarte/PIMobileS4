@@ -8,11 +8,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -26,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
-public class ContaActivity extends AppCompatActivity {
+public class ContaActivity extends TelaActivity {
     public static final String EXTRA_CADASTRO = "cadastro";
     public static final String EXTRA_EMAIL = "email";
 
@@ -46,15 +41,7 @@ public class ContaActivity extends AppCompatActivity {
         super.onCreate(state);
         cadastro = getIntent().getBooleanExtra(EXTRA_CADASTRO, false);
         envio = new ViewModelProvider(this).get(Envio.class);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_conta);
-        View raiz = findViewById(R.id.main);
-        ViewCompat.setOnApplyWindowInsetsListener(raiz, (view, insets) -> {
-            Insets margem = insets.getInsets(WindowInsetsCompat.Type.systemBars()
-                    | WindowInsetsCompat.Type.ime());
-            view.setPadding(margem.left, margem.top, margem.right, margem.bottom);
-            return insets;
-        });
+        tela(R.layout.activity_conta);
 
         email = findViewById(R.id.emailConta);
         senha = findViewById(R.id.novaSenha);
