@@ -1,140 +1,86 @@
-# PIMobileS4 — base Android de ordens de serviço
+# PIMobileS4
 
-O [serviço de importação por e-mail](api-email/README.md) lê solicitações via IMAP e cria ordens no mesmo Firestore do aplicativo.
+O PIMobileS4 é um aplicativo Android para acompanhar ordens de serviço. Você pode criar uma ordem pelo app ou recebê-la por e-mail usando a API Spring Boot. As duas formas gravam no mesmo Cloud Firestore. Cada conta vê suas próprias ordens e seu histórico.
 
-Aplicativo nativo Android em **Java + layouts XML**, construído sobre o projeto enviado. Não usa páginas HTML ou JSF.
+## Como o sistema funciona
 
-## O que está incluído
+```mermaid
+flowchart LR
+    App["App Android"] -->|"Login e cadastro"| Auth["Firebase Authentication"]
+    App -->|"Consulta e altera ordens"| Banco["Cloud Firestore"]
+    API["API Spring Boot"] -->|"Consulta a pasta configurada"| Email["Servidor de e-mail IMAP"]
+    API -->|"Cria ordens para o UID configurado"| Banco
+```
 
-| Fluxo pedido | Implementação |
-|---|---|
-| Login | MainActivity + activity_main.xml; Firebase Authentication por e-mail e senha |
-| Lista de ordens | ListaOrdensActivity + activity_lista.xml; busca por número, título e cliente, filtro de status e estado vazio |
-| Detalhes | DetalhesOrdemActivity + activity_detalhes.xml |
-| Criar ordem | FormularioOrdemActivity + activity_formulario.xml |
-| Editar ordem | Mesmo formulário, carregando a ordem pelo ID |
-| Alterar status | Diálogo com seleção e confirmação nos detalhes |
-| Gerar PDF | Ação nos detalhes; exportação nativa paginada via OrdemPdf |
-| Confirmar exclusão | Diálogo com Cancelar e Excluir |
+O app usa Java, layouts XML e componentes Material 3. A API em `api-email` roda como um serviço separado e pode ser executada sem o Android Studio. O UID é o identificador da conta no Firebase Authentication. As ordens ficam em `usuarios/{uid}/ordens`, e o histórico fica em `usuarios/{uid}/registros`. A numeração das ordens é sequencial por conta e compartilhada entre o app e a API.
 
-## Abrir e experimentar
+## Casos de uso
 
-1. Extraia o ZIP e abra a pasta `PIMobileS4-main` no Android Studio.
-2. Use o JDK recomendado pelo Android Studio para o Gradle/AGP já configurado no projeto. O Java 11 em `compileOptions` é o nível do código, não a versão obrigatória do JDK que executa o Gradle.
-3. Sincronize o Gradle. A sincronização inicial precisa acessar os servidores de distribuição e dependências; o projeto mantém as versões recebidas no ZIP original.
-4. Rode o módulo `app` em aparelho ou emulador Android 7.0/API 24 ou superior.
-5. Entre com uma conta criada no Firebase Authentication. Crie uma ordem para preencher a lista.
-6. Para PDF, abra a ordem e escolha Gerar PDF; o Android permite escolher nome e destino. Abra/compartilhe o arquivo pelo gerenciador de arquivos após salvar.
+| Ator | Caso de uso | Como funciona |
+| --- | --- | --- |
+| Visitante | Criar conta | Em **Criar conta**, informe o e-mail, escolha uma senha e confirme. Após o cadastro, o app abre a visão geral. |
+| Usuário cadastrado | Entrar | Informe e-mail e senha. Com credenciais válidas, o app abre **Visão geral**, com o total de ordens e a contagem por status. |
+| Usuário cadastrado | Recuperar senha | Em **Esqueci minha senha**, informe o e-mail para solicitar o link de redefinição. |
+| Usuário autenticado | Criar uma ordem | Abra **Nova ordem** em **Início** ou **Ordens**, preencha título, nome do cliente e descrição e salve. A ordem recebe um número e começa com status **Aberta**. |
+| Usuário autenticado | Encontrar e consultar uma ordem | Na aba **Ordens**, busque por número, título ou cliente ou filtre por status. Expanda o cartão para ver os dados de contato e a descrição ou abra os detalhes completos. |
+| Usuário autenticado | Editar uma ordem | Abra **Editar** na lista ou nos detalhes, altere os campos e salve. O número e a data de criação são preservados. |
+| Usuário autenticado | Alterar o status | Nos detalhes, selecione **Alterar status**, escolha o novo status e confirme. A alteração aparece no histórico. |
+| Usuário autenticado | Excluir uma ordem | Escolha **Excluir** na lista ou nos detalhes e confirme. A ordem sai da lista e o histórico registra a exclusão. |
+| Usuário autenticado | Consultar o histórico | A aba **Registros** mostra criações, edições, mudanças de status e exclusões, com as ações mais recentes primeiro. |
+| Usuário autenticado | Exportar PDF | Nos detalhes, gere o PDF da ordem. Em **Relatórios**, exporte a contagem geral por status ou só a do status selecionado. |
+| Usuário autenticado | Ajustar a interface ou sair | Em **Perfil**, consulte a conta conectada, acesse as preferências de texto ampliado e alto contraste ou encerre a sessão. As preferências também ficam no cabeçalho. |
+| Serviço de importação | Criar uma ordem a partir de e-mail | A API consulta a pasta IMAP por agendamento ou por um POST autenticado. Usa o assunto como título, o remetente como cliente e o corpo como descrição. Grava a ordem e o registro de criação para a conta configurada. |
 
-Não é necessário instalar o aplicativo desktop do ChatGPT para abrir este projeto. Android Studio e o SDK Android continuam necessários para compilar o aplicativo.
+Telefone, e-mail do cliente e responsável são opcionais no formulário. **Média** é a prioridade inicial, e pode ser alterada antes de salvar. Ordens importadas por e-mail começam com prioridade **Média**. Os status disponíveis são **Aberta**, **Em andamento**, **Concluída** e **Cancelada**. Os modelos de produto e estoque estão no código como base para evolução. O app ainda não oferece telas de estoque ou baixa automática de itens.
 
-## Classes model
+## Rodar o aplicativo Android
 
-Todas ficam em `app/src/main/java/com/example/pimobiles4/model` e têm construtor vazio, atributos privados, getters e setters.
+1. Clone o repositório e abra a pasta `PIMobileS4` no Android Studio.
+2. Configure o Gradle para usar um JDK 17 e instale o Android SDK 36. O código do app usa Java 11 como nível de compilação. O aparelho ou emulador precisa ter Android 7.0 (API 24) ou superior.
+3. No Console do Firebase, registre o pacote `com.example.pimobiles4` e coloque o `google-services.json` em `app/`.
+4. Habilite **E-mail/senha** no Firebase Authentication. Crie o banco padrão do Cloud Firestore e publique as regras de [firestore.rules](firestore.rules).
+5. Sincronize o Gradle e rode o módulo `app`. Crie uma conta pelo aplicativo ou entre com uma conta existente do mesmo projeto Firebase.
 
-| Classe | Papel e principais campos |
-|---|---|
-| Usuario | id, nome, email, ativo; não transporta senha |
-| Cliente | id, nome, telefone, email |
-| OrdemServico | id, título, cliente, descrição, responsável, status, prioridade, criação e atualização |
-| Produto | id, nome, código, unidade de medida, valor unitário BigDecimal |
-| Estoque | produtoId e quantidadeDisponivel |
-| ItemOrdemServico | id, ordemServicoId, produtoId, descrição, quantidade, valor unitário BigDecimal |
-| MovimentacaoEstoque | id, produtoId, ordemServicoId opcional, tipo, quantidade, data |
-| StatusOrdemServico | ABERTA, EM_ANDAMENTO, CONCLUIDA, CANCELADA |
-| Prioridade | BAIXA, MEDIA, ALTA |
-| TipoMovimentacao | ENTRADA, SAIDA |
+A compilação pode gerar um APK sem o `google-services.json`, mas o login e o acesso às ordens dependem da configuração do Firebase.
 
-Os models são objetos do aplicativo/DTOs, **sem anotações JPA**. Entidades do backend serão classes separadas. IDs locais são demonstrativos; IDs definitivos virão do servidor.
+## Rodar a API de e-mail
 
-## Organização
+Siga o [guia da API](api-email/README.md) para configurar o projeto Firebase, o UID da conta, as credenciais do servidor, a caixa IMAP e o token do endpoint. Se usar um JSON de conta de serviço para rodar a API localmente, guarde-o fora do repositório. O `google-services.json` configura o Android, enquanto a conta de serviço autoriza a API a gravar no Firestore.
 
-- `model/`: dados e enums.
-- `data/OrdemRepository.java`: contrato de acesso às ordens.
-- `data/FirebaseOrdemRepository.java`: operações assíncronas no Cloud Firestore.
-- `ui/`: Activities das telas, navegação e validação de formulário.
-- `util/OrdemPdf.java`: PDF A4 com quebra de linhas e paginação.
-- `res/layout/`: interfaces XML editáveis no Android Studio.
-- `res/values/`: cores, nome e tema claro compartilhado.
+Na raiz do repositório, rode no PowerShell:
 
-## Decisões provisórias
+```powershell
+.\gradlew.bat -p api-email bootRun
+```
 
-O PDF é geral: cita Android, Java, MySQL, autenticação, CRUD, estoque e relatórios, mas não especifica campos de OS, permissões ou transições de status. A lista de telas enviada orientou o fluxo de ordens.
+Por padrão, a API escuta em `127.0.0.1:8080` e consulta a caixa a cada minuto. Para acionar a importação manualmente, use `POST /api/importacoes/email` com o token Bearer. Na primeira importação, as mensagens que já estiverem na pasta configurada também entram na fila. Para conferir o fluxo, envie uma mensagem de teste a essa pasta e procure a ordem no Android com a conta do UID configurado.
 
-- Campos obrigatórios: título, nome do cliente e descrição. E-mail opcional é validado quando informado.
-- Telefone, e-mail do cliente e responsável são opcionais.
-- Toda ordem nova começa ABERTA, com prioridade MEDIA.
-- Qualquer status pode ser escolhido nesta base. Reabertura, cancelamento e bloqueio de edição precisam de regras do grupo.
-- Datas são armazenadas como epoch em milissegundos e exibidas no fuso do aparelho.
-- Criar e editar compartilham a mesma tela para manter a consistência.
-- Alteração de status, exclusão e geração de PDF partem dos detalhes, sem exigir Activities separadas.
-- Os dados começam vazios e persistem entre execuções. Sair encerra a sessão do Firebase e preserva ordens.
-- Os models de estoque são uma preparação; **não há telas, movimentação ou baixa automática de estoque** nesta entrega. Produtos e itens ainda não são ligados ao CRUD de ordens.
+## Estrutura do repositório
 
-## Configuração do Firebase
+| Local | Conteúdo |
+| --- | --- |
+| `app/src/main/java` | Telas, modelos de dados, acesso ao Firebase e geração de PDF |
+| `app/src/main/res` | Layouts, textos, ícones e estilos do Android |
+| `app/src/test` | Testes unitários do Android |
+| `api-email/` | Projeto Gradle independente com a API Spring Boot e seus testes |
+| `firestore.rules` | Regras de acesso do aplicativo ao Firestore |
+| `.github/workflows/android-ci.yml` | Validação Android, publicação do APK e tag de versão |
 
-1. Registre o app Android com o pacote `com.example.pimobiles4` e coloque o arquivo `google-services.json` em `app/`.
-2. No Firebase Authentication, habilite **E-mail/senha** e crie uma conta em **Usuários**.
-3. Crie o banco padrão do Cloud Firestore em modo de produção. Na aba **Regras**, publique as regras de `firestore.rules` para este app.
-4. Compile o projeto e entre com a conta criada.
+## Validação e versões
 
-Cada conta tem suas próprias ordens em `usuarios/{uid}/ordens`. O número da OS é gerado por conta. Os registros locais do protótipo continuam no armazenamento original e não são importados automaticamente. O PDF é gerado no aparelho a partir dos dados da ordem.
-
-## Validação automática de commits e PRs
-
-Para executar os testes unitários antes de cada commit, rode uma vez por clone:
+Para habilitar a validação antes de cada commit, rode uma vez por clone:
 
 ```sh
 git config --local core.hooksPath .githooks
 ```
 
-O gancho usa o Gradle e bloqueia o commit se os testes falharem. Ele testa os arquivos como estão no disco, incluindo mudanças ainda fora do commit.
+O gancho valida o conteúdo do índice do Git, ou seja, a versão que entraria no commit. Ele verifica o diff preparado e executa `lintDebug` e `testDebugUnitTest`. Para rodar as verificações e gerar o APK localmente no PowerShell:
 
-Nos PRs para `main`, o GitHub Actions executa `lintDebug`, `testDebugUnitTest` e `assembleDebug` sobre o código enviado. Para exigir essa validação antes do merge, configure o check **Validar Android** como obrigatório na proteção da `main`.
+```powershell
+.\gradlew.bat :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
+.\gradlew.bat -p api-email test
+```
 
-## Versão automática na main
+Nos PRs e pushes para `main`, o GitHub Actions roda o lint, os testes unitários e o build do Android. Nos pushes para `main`, disponibiliza o APK de depuração em **Actions → Validacao Android → Artifacts** e publica a tag `1.1.N`, em que `N` é o número da execução. O código de versão do APK é `N + 1`. Para que esse APK acesse o Firebase, configure o secret `GOOGLE_SERVICES_JSON` com o conteúdo do arquivo do Android. O workflow lê esse secret nos builds de `main`.
 
-O GitHub Actions valida os PRs e roda novamente a cada atualização da `main`, inclusive após merges. Depois de passar na validação e gerar o APK, o workflow publica uma tag Git no commit validado com o mesmo nome da versão do APK. O APK de depuração aparece em **Actions → Validacao Android → Artifacts**.
-
-A execução de número `N` usa a tag `1.1.N`, `versionName = 1.1.N` e `versionCode = N + 1`. Os números podem pular porque os PRs também usam o contador do workflow. Reexecutar o mesmo build mantém sua versão.
-
-Para que o APK do GitHub Actions acesse o Firebase, adicione o conteúdo completo do arquivo `app/google-services.json` ao secret `GOOGLE_SERVICES_JSON` em **Settings → Secrets and variables → Actions**. O workflow usa o secret apenas nas execuções da `main`.
-
-## Menu inferior
-
-- **Início** resume a quantidade total de ordens e a contagem por status.
-- **Ordens** permite buscar, filtrar, expandir, criar, editar e excluir ordens.
-- **Registros** mostra criação, edição, alteração de status e exclusão, com data e tipo de ação. A lista mostra o status atual das ordens existentes e preserva o status registrado quando uma ordem é excluída.
-- **Relatórios** gera um PDF com o total e a distribuição por status ou somente a contagem do status escolhido.
-- **Perfil** mostra a conta conectada e permite sair.
-
-Publique o conteúdo atualizado de `firestore.rules` antes de usar esta versão. As alterações das ordens e seus registros são salvos juntos no Firestore e precisam de conexão. O histórico começa com as ações feitas a partir desta versão.
-
-## Validação e roteiro de conferência
-
-Ao abrir no Android Studio, confira:
-
-1. Login inválido mostra erro; uma conta válida abre a lista de ordens.
-2. Salvar sem os campos obrigatórios mostra erro; e-mail informado inválido também.
-3. Criar uma OS, buscar por cliente e filtrar por status.
-4. Editar sem alterar ID/data de criação; conferir atualização nos detalhes.
-5. Cancelar a troca de status preserva o valor; confirmar atualiza lista e detalhes.
-6. Cancelar exclusão preserva a OS; confirmar remove a ordem.
-7. Fechar e reabrir o aplicativo preserva os registros; sair volta ao login.
-8. Gerar PDF com descrição longa: conferir quebras de linha, páginas, acentos e destino.
-9. Girar aparelho, abrir teclado e testar campos/botões em tela pequena.
-
-## Rodando com Docker (Backend / API da Equipe)
-
-Para garantir que a API do projeto rode de forma idêntica em qualquer ambiente de desenvolvimento ou produção, utilizamos o Docker com um servidor de produção (`gunicorn`)[cite: 17, 22].
-
-### 1. Construir a imagem Docker
-Na raiz do projeto (onde o `Dockerfile` está localizado), execute o comando de *build*[cite: 18]:
-
-docker build -t opstrack-api:0.1.0 .
-
-2. Executar o containerSuba o container em segundo plano, mapeando a porta 8000 do seu ambiente para a porta 8000 do container:   Bashdocker run -d --name opstrack -p 8000:8000 opstrack-api:0.1.0
-3. Verificar se a API está respondendoTeste o endpoint de status da aplicação:   Bashcurl localhost:8000/status
-
-(A resposta esperada deve ser {"status":"ok"})   4. Como ver os logs e parar o containerVisualizar logs em tempo real:Bashdocker logs -f opstrack
-Parar e remover o container:Bashdocker rm -f opstrack
+O job **Validar Docker** e o `Dockerfile` da raiz se referem a um backend Python. O job pula a construção da imagem e o teste de `GET /status` quando `app.py` ou `requirements.txt` está ausente, como ocorre no repositório atual. A API Spring Boot é executada e testada pelos comandos Gradle acima.

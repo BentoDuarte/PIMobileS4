@@ -21,7 +21,7 @@ Use um JDK 17 ou superior. Escolha uma pasta ou caixa dedicada a solicitações.
 | `IMAP_PROXY_PORTA` | Opcional, padrão `1080` |
 | `IMAP_PROXY_TIPO` | Opcional, `socks5` (padrão) ou `http` (HTTP CONNECT) |
 | `API_TOKEN` | Segredo aleatório com pelo menos 32 caracteres entre letras, dígitos, `_` e `-` |
-| `IMPORTACAO_CRON` | Opcional. Padrão `-` para importação manual. Use `0 * * * * *` para consultar a caixa a cada minuto |
+| `IMPORTACAO_CRON` | Opcional. Padrão `0 * * * * *` para consultar a caixa a cada minuto. Use `-` para desligar o agendamento e importar pelo endpoint |
 | `API_ENDERECO` e `API_PORTA` | Opcionais, padrões `127.0.0.1` e `8080` |
 
 Use uma identidade de servidor com acesso de leitura e escrita ao Firestore, por exemplo com o papel `roles/datastore.user`. O SDK Admin usa permissões IAM. Mantenha as credenciais e o token fora do repositório. A conexão IMAP desta versão usa autenticação por senha. Se o provedor exigir OAuth, será necessário adaptar a conexão.
@@ -41,7 +41,7 @@ Defina as variáveis no terminal ou na configuração do ambiente. Na raiz do re
 .\gradlew.bat -p api-email bootRun
 ```
 
-Envie um e-mail de teste à pasta configurada e, em outro PowerShell com o mesmo token, dispare a importação:
+Para testar o endpoint sem que o agendamento importe a mensagem antes do POST, defina `$env:IMPORTACAO_CRON = "-"` antes de executar `bootRun`. Envie um e-mail de teste à pasta configurada e, em outro PowerShell com o mesmo token, dispare a importação:
 
 ```powershell
 Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/importacoes/email `
