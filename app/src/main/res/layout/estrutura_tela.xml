@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="56dp"
+        android:minHeight="60dp"
         android:background="?attr/colorPrimary"
         android:gravity="center_vertical"
         android:paddingStart="20dp"
@@ -30,7 +30,7 @@
             android:layout_weight="1"
             android:text="@string/marca_app"
             android:textColor="?attr/colorOnPrimary"
-            android:textSize="18sp"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatImageButton
