@@ -1,6 +1,6 @@
 server:
   address: ${API_ENDERECO:127.0.0.1}
-  port: ${API_PORTA:8080}
+  port: ${API_PORTA:${PORT:8080}}
 
 importacao:
   token: ${API_TOKEN}

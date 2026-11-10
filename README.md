@@ -55,6 +55,8 @@ Na raiz do repositório, rode no PowerShell:
 
 Por padrão, a API escuta em `127.0.0.1:8080` e consulta a caixa a cada minuto. Para acionar a importação manualmente, use `POST /api/importacoes/email` com o token Bearer. Na primeira importação, as mensagens que já estiverem na pasta configurada também entram na fila. Para conferir o fluxo, envie uma mensagem de teste a essa pasta e procure a ordem no Android com a conta do UID configurado.
 
+Para empacotar a API em um contêiner, use o [guia de execução com Docker](api-email/README.md#rodar-com-docker).
+
 ## Estrutura do repositório
 
 | Local | Conteúdo |
@@ -63,6 +65,7 @@ Por padrão, a API escuta em `127.0.0.1:8080` e consulta a caixa a cada minuto. 
 | `app/src/main/res` | Layouts, textos, ícones e estilos do Android |
 | `app/src/test` | Testes unitários do Android |
 | `api-email/` | Projeto Gradle independente com a API Spring Boot e seus testes |
+| `Dockerfile` | Imagem da API Spring Boot com Java 17 |
 | `firestore.rules` | Regras de acesso do aplicativo ao Firestore |
 | `.github/workflows/android-ci.yml` | Validação Android, publicação do APK e tag de versão |
 
@@ -83,4 +86,4 @@ O gancho valida o conteúdo do índice do Git, ou seja, a versão que entraria n
 
 Nos PRs e pushes para `main`, o GitHub Actions roda o lint, os testes unitários e o build do Android. Nos pushes para `main`, disponibiliza o APK de depuração em **Actions → Validacao Android → Artifacts** e publica a tag `1.1.N`, em que `N` é o número da execução. O código de versão do APK é `N + 1`. Para que esse APK acesse o Firebase, configure o secret `GOOGLE_SERVICES_JSON` com o conteúdo do arquivo do Android. O workflow lê esse secret nos builds de `main`.
 
-O job **Validar Docker** e o `Dockerfile` da raiz se referem a um backend Python. O job pula a construção da imagem e o teste de `GET /status` quando `app.py` ou `requirements.txt` está ausente, como ocorre no repositório atual. A API Spring Boot é executada e testada pelos comandos Gradle acima.
+O job **Validar Docker** executa os testes da API Spring Boot durante o build da imagem, inicia o contêiner com credenciais fictícias e verifica se `GET /status` responde. A validação desativa o agendamento e não consulta o IMAP nem grava no Firestore.

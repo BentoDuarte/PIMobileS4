@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.Map;
 
 @RestController
 class ImportacaoController {
@@ -28,6 +30,11 @@ class ImportacaoController {
         this.importador = importador;
         imap = config.imap();
         autorizacao = ("Bearer " + config.token()).getBytes(StandardCharsets.UTF_8);
+    }
+
+    @GetMapping("/status")
+    Map<String, String> status() {
+        return Map.of("status", "ok");
     }
 
     @PostMapping("/api/importacoes/email")

@@ -108,12 +108,27 @@ jobs:
       - name: Baixar o codigo
         uses: actions/checkout@v4
       - name: Construir a imagem e testar o /status
+        shell: bash
         run: |
-          if [ ! -f app.py ] || [ ! -f requirements.txt ]; then
-            echo "::notice::Backend Python ausente neste commit. Validação Docker ignorada."
-            exit 0
-          fi
-          docker build -t opstrack-api:ci .
-          docker run -d --name api -p 8000:8000 opstrack-api:ci
-          sleep 5
-          curl --fail http://localhost:8000/status
+          # Credencial sintética para iniciar o SDK. A importação fica desativada no teste.
+          credencial="$RUNNER_TEMP/firebase-docker-test.json"
+          printf '%s\n' '{"type":"authorized_user","client_id":"ci","client_secret":"ci","refresh_token":"ci"}' > "$credencial"
+          chmod 644 "$credencial"
+          trap 'if [ "$?" -ne 0 ]; then docker logs api-email-ci 2>/dev/null || true; fi; docker rm -f api-email-ci >/dev/null 2>&1 || true' EXIT
+
+          docker build -t pimobiles4-api-email:ci .
+          docker run -d --name api-email-ci -p 127.0.0.1:8080:8080 \
+            --mount "type=bind,source=$credencial,target=/run/secrets/firebase.json,readonly" \
+            -e GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/firebase.json \
+            -e FIREBASE_PROJECT_ID=pimobile-docker-ci \
+            -e FIREBASE_USUARIO_UID=usuario-ci \
+            -e API_TOKEN=token-de-teste-docker-sem-acesso-real \
+            -e IMPORTACAO_CRON=- \
+            -e IMAP_HOST=imap.example.invalid \
+            -e IMAP_USUARIO=usuario-ci \
+            -e IMAP_SENHA=senha-ficticia \
+            pimobiles4-api-email:ci
+
+          resposta=$(curl --fail --silent --show-error --retry 20 --retry-connrefused \
+            --retry-delay 1 --retry-max-time 35 --max-time 5 http://127.0.0.1:8080/status)
+          test "$resposta" = '{"status":"ok"}'
