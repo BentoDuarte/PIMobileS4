@@ -48,12 +48,7 @@ public class DetalhesOrdemActivity extends BaseActivity {
         findViewById(R.id.excluir).setOnClickListener(v -> {
             if (ordem == null) return;
             long id = ordem.getId();
-            new AlertDialog.Builder(this).setTitle("Excluir OS #" + id + "?")
-                    .setMessage("A ordem será removida da sua conta.")
-                    .setNegativeButton("Cancelar", null)
-                    .setPositiveButton("Excluir", (dialogo, botao) ->
-                            gravar(repo.excluir(id), this::finish))
-                    .show();
+            confirmarExclusao(id, () -> gravar(repo.excluir(id), this::finish));
         });
         findViewById(R.id.pdf).setOnClickListener(v->{if(ordem!=null){pdfSnapshot=ordem;exportar.launch("OS-"+ordem.getId()+".pdf");}});
     }
