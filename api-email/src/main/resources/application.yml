@@ -1,0 +1,18 @@
+server:
+  address: ${API_ENDERECO:127.0.0.1}
+  port: ${API_PORTA:8080}
+
+importacao:
+  token: ${API_TOKEN}
+  cron: "${IMPORTACAO_CRON:0 * * * * *}"
+  projeto-firebase: ${FIREBASE_PROJECT_ID}
+  usuario-firebase: ${FIREBASE_USUARIO_UID}
+  imap:
+    host: "${IMAP_HOST:}"
+    porta: ${IMAP_PORTA:993}
+    usuario: "${IMAP_USUARIO:}"
+    senha: "${IMAP_SENHA:}"
+    pasta: ${IMAP_PASTA:INBOX}
+    proxy-host: "${IMAP_PROXY_HOST:}"
+    proxy-porta: ${IMAP_PROXY_PORTA:1080}
+    proxy-tipo: ${IMAP_PROXY_TIPO:socks5}

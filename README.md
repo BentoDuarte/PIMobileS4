@@ -1,5 +1,7 @@
 # PIMobileS4 — base Android de ordens de serviço
 
+O [serviço de importação por e-mail](api-email/README.md) lê solicitações via IMAP e cria ordens no mesmo Firestore do aplicativo.
+
 Aplicativo nativo Android em **Java + layouts XML**, construído sobre o projeto enviado. Não usa páginas HTML ou JSF.
 
 ## O que está incluído
