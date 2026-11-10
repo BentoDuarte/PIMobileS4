@@ -1,20 +1,20 @@
-FROM python:3.12-slim
+FROM eclipse-temurin:17-jdk-jammy AS build
+WORKDIR /build
 
-ENV PYTHONUNBUFFERED=1
+COPY gradlew ./
+COPY gradle/wrapper/ gradle/wrapper/
+COPY api-email/build.gradle api-email/settings.gradle api-email/
+COPY api-email/src/ api-email/src/
 
+RUN sh ./gradlew --no-daemon -p api-email test bootJar \
+    && cp api-email/build/libs/*.jar /build/api-email.jar
+
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY --from=build /build/api-email.jar ./api-email.jar
+ENV API_ENDERECO=0.0.0.0
+EXPOSE 8080
+USER 10001:10001
 
-COPY app.py .
-
-RUN useradd --create-home appuser
-USER appuser
-
-EXPOSE 8000
-
-HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/status')"
-
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
+ENTRYPOINT ["java", "-jar", "/app/api-email.jar"]

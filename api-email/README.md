@@ -22,7 +22,7 @@ Use um JDK 17 ou superior. Escolha uma pasta ou caixa dedicada a solicitações.
 | `IMAP_PROXY_TIPO` | Opcional, `socks5` (padrão) ou `http` (HTTP CONNECT) |
 | `API_TOKEN` | Segredo aleatório com pelo menos 32 caracteres entre letras, dígitos, `_` e `-` |
 | `IMPORTACAO_CRON` | Opcional. Padrão `0 * * * * *` para consultar a caixa a cada minuto. Use `-` para desligar o agendamento e importar pelo endpoint |
-| `API_ENDERECO` e `API_PORTA` | Opcionais, padrões `127.0.0.1` e `8080` |
+| `API_ENDERECO` e `API_PORTA` | Opcionais. Fora do Docker, o endereço padrão é `127.0.0.1`. A imagem Docker usa `0.0.0.0`. A porta é `8080` por padrão e pode ser definida por `PORT` quando `API_PORTA` estiver ausente |
 
 Use uma identidade de servidor com acesso de leitura e escrita ao Firestore, por exemplo com o papel `roles/datastore.user`. O SDK Admin usa permissões IAM. Mantenha as credenciais e o token fora do repositório. A conexão IMAP desta versão usa autenticação por senha. Se o provedor exigir OAuth, será necessário adaptar a conexão.
 
@@ -51,6 +51,29 @@ Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/importacoes/email 
 Em caso de sucesso, a API retorna `200` com `ordensCriadas` e `emAndamento`. Confira a OS e o registro de criação no Android, conectado com a conta do UID configurado. Repita o POST e verifique que o mesmo e-mail gera zero novas ordens. A API retorna `401` para token inválido, `409` quando já há importação em execução na instância e `503` em caso de falha.
 
 Para gerar o JAR executável, rode `.\gradlew.bat -p api-email bootJar`. Em um servidor, exponha o endpoint por HTTPS caso precise acioná-lo remotamente.
+
+## Rodar com Docker
+
+Na raiz do repositório, rode o build. O Docker executa os testes da API, gera o JAR e copia o resultado para uma imagem de execução com Java 17.
+
+```powershell
+docker build -t pimobiles4-api-email .
+```
+
+No mesmo PowerShell em que você definiu as variáveis da tabela, inicie o contêiner. O caminho em `GOOGLE_APPLICATION_CREDENTIALS` deve apontar para o JSON da conta de serviço no seu computador. O Docker monta o arquivo como somente leitura.
+
+```powershell
+docker run --rm --name pimobiles4-api-email -p 127.0.0.1:8080:8080 `
+  --mount "type=bind,source=$env:GOOGLE_APPLICATION_CREDENTIALS,target=/run/secrets/firebase.json,readonly" `
+  --env GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/firebase.json `
+  --env FIREBASE_PROJECT_ID --env FIREBASE_USUARIO_UID --env API_TOKEN `
+  --env IMAP_HOST --env IMAP_USUARIO --env IMAP_SENHA --env IMAP_PASTA `
+  --env IMAP_PORTA --env IMPORTACAO_CRON `
+  --env IMAP_PROXY_HOST --env IMAP_PROXY_PORTA --env IMAP_PROXY_TIPO `
+  pimobiles4-api-email
+```
+
+Em outro terminal, use `curl.exe --fail http://127.0.0.1:8080/status`. A resposta `{"status":"ok"}` confirma que o servidor iniciou. Para validar a importação, envie um e-mail de teste e confira a ordem no Android.
 
 - [Credenciais do Firebase Admin SDK](https://firebase.google.com/docs/admin/setup)
 - [Permissões IAM do Cloud Firestore](https://firebase.google.com/docs/firestore/security/iam)
