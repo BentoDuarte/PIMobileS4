@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main" android:layout_width="match_parent" android:layout_height="match_parent" android:background="?attr/colorSurface" android:fillViewport="true">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main" android:layout_width="match_parent" android:layout_height="match_parent" android:background="?attr/colorSurfaceContainer" android:fillViewport="true">
 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
-<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Nova ordem" android:textSize="28sp" android:textStyle="bold" android:accessibilityHeading="true" android:textColor="?attr/colorOnSurface" android:layout_marginBottom="12dp" android:id="@+id/cabecalho"/>
-<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Informe os dados do serviço. Os campos com * são obrigatórios." android:textSize="16sp" android:textColor="?attr/colorOnSurface" android:layout_marginBottom="12dp"/>
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/nova_ordem" android:textAppearance="@style/TextoTela.Titulo" android:accessibilityHeading="true" android:layout_marginBottom="4dp" android:id="@+id/cabecalho"/>
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Informe os dados do serviço. Os campos com * são obrigatórios." android:textAppearance="@style/TextoTela.Apoio" android:layout_marginBottom="16dp"/>
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:accessibilityHeading="true"
+    android:text="@string/ordem_secao_servico"
+    android:textAppearance="@style/TextoTela.Secao" />
 <com.google.android.material.textfield.TextInputLayout
     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
     android:layout_width="match_parent"
@@ -12,6 +19,14 @@
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/titulo" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textCapSentences"  />
 </com.google.android.material.textfield.TextInputLayout>
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:accessibilityHeading="true"
+    android:text="@string/ordem_secao_cliente"
+    android:textAppearance="@style/TextoTela.Secao" />
 <com.google.android.material.textfield.TextInputLayout
     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
     android:layout_width="match_parent"
@@ -39,6 +54,14 @@
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/emailCliente" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textEmailAddress"  />
 </com.google.android.material.textfield.TextInputLayout>
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:accessibilityHeading="true"
+    android:text="@string/ordem_secao_atendimento"
+    android:textAppearance="@style/TextoTela.Secao" />
 <com.google.android.material.textfield.TextInputLayout
     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
     android:layout_width="match_parent"

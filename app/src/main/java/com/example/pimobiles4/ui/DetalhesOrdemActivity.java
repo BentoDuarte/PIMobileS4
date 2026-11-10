@@ -56,11 +56,13 @@ public class DetalhesOrdemActivity extends BaseActivity {
     private void carregar(){
         ordem = null;
         habilitarAcoes(false);
-        ((TextView) findViewById(R.id.tituloDetalhe)).setText("");
+        findViewById(R.id.painelDetalhes).setVisibility(View.GONE);
+        findViewById(R.id.tituloAcoesDetalhe).setVisibility(View.GONE);
         View recarregar = findViewById(R.id.recarregarDetalhes);
         TextView dados = findViewById(R.id.dados);
         recarregar.setVisibility(View.GONE);
         dados.setText("Carregando ordem…");
+        dados.setVisibility(View.VISIBLE);
         repo.buscar(getIntent().getLongExtra("ordemId", 0))
                 .addOnSuccessListener(this, registro -> {
                     if (registro == null) {
@@ -98,8 +100,19 @@ public class DetalhesOrdemActivity extends BaseActivity {
     }
 
     private void mostrar() {
-        ((TextView)findViewById(R.id.tituloDetalhe)).setText("OS #"+ordem.getId()+" • "+ordem.getTitulo());
-        ((TextView)findViewById(R.id.dados)).setText("Status: "+ordem.getStatus()+"\nPrioridade: "+ordem.getPrioridade()+"\n\nCliente: "+ordem.getCliente().getNome()+"\nTelefone: "+ordem.getCliente().getTelefone()+"\nE-mail: "+ordem.getCliente().getEmail()+"\nResponsável: "+ordem.getResponsavel()+"\n\nDescrição\n"+ordem.getDescricao()+"\n\nCriada em: "+data(ordem.getCriadaEm())+"\nAtualizada em: "+data(ordem.getAtualizadaEm()));
+        Cliente cliente = ordem.getCliente();
+        ((TextView) findViewById(R.id.tituloDetalhe)).setText(getString(
+                R.string.detalhe_titulo, ordem.getId(), ordem.getTitulo()));
+        ((TextView) findViewById(R.id.situacaoDetalhe)).setText(getString(
+                R.string.detalhe_situacao, ordem.getStatus(), ordem.getPrioridade()));
+        ((TextView) findViewById(R.id.clienteDetalhe)).setText(getString(
+                R.string.detalhe_cliente, cliente.getNome(), cliente.getTelefone(), cliente.getEmail()));
+        ((TextView) findViewById(R.id.atendimentoDetalhe)).setText(getString(
+                R.string.detalhe_atendimento, ordem.getResponsavel(), ordem.getDescricao(),
+                data(ordem.getCriadaEm()), data(ordem.getAtualizadaEm())));
+        findViewById(R.id.dados).setVisibility(View.GONE);
+        findViewById(R.id.painelDetalhes).setVisibility(View.VISIBLE);
+        findViewById(R.id.tituloAcoesDetalhe).setVisibility(View.VISIBLE);
     }
     private String data(long t){return new SimpleDateFormat("dd/MM/yyyy HH:mm",Locale.getDefault()).format(new Date(t));}
     private void alterarStatus(){
