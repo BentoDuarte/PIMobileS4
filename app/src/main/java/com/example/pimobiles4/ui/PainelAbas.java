@@ -28,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -47,6 +48,9 @@ final class PainelAbas {
     private final BottomNavigationView menu;
     private final Map<Integer, View> abas = new HashMap<>();
     private final TextView resumoInicio;
+    private final View cartoesInicio;
+    private final TextView totalInicio;
+    private final TextView statusInicio;
     private final Spinner filtroRelatorio;
     private final TextView resumoRelatorio;
     private final View gerarRelatorio;
@@ -76,13 +80,17 @@ final class PainelAbas {
         View perfil = incluir(container, R.id.aba_perfil, R.layout.aba_perfil);
 
         resumoInicio = inicio.findViewById(R.id.resumoInicio);
+        cartoesInicio = inicio.findViewById(R.id.cartoesInicio);
+        totalInicio = inicio.findViewById(R.id.totalInicio);
+        statusInicio = inicio.findViewById(R.id.statusInicio);
+        inicio.findViewById(R.id.novaOrdemInicio).setOnClickListener(v -> activity.abrirNovaOrdem());
         inicio.findViewById(R.id.abrirOrdens).setOnClickListener(v ->
                 menu.setSelectedItemId(R.id.aba_ordens));
 
         resumoRegistros = historico.findViewById(R.id.resumoRegistros);
         recarregarRegistros = historico.findViewById(R.id.recarregarRegistros);
         recarregarRegistros.setOnClickListener(v -> carregarRegistros());
-        adapterRegistros = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1);
+        adapterRegistros = new ArrayAdapter<>(activity, R.layout.item_registro);
         ((ListView) historico.findViewById(R.id.listaRegistros)).setAdapter(adapterRegistros);
 
         filtroRelatorio = relatorios.findViewById(R.id.filtroRelatorio);
@@ -92,6 +100,7 @@ final class PainelAbas {
 
         TextView email = perfil.findViewById(R.id.emailPerfil);
         email.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        perfil.findViewById(R.id.acessibilidadePerfil).setOnClickListener(v -> activity.abrirAcessibilidade());
         perfil.findViewById(R.id.sairPerfil).setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
             activity.startActivity(new Intent(activity, MainActivity.class)
@@ -145,13 +154,15 @@ final class PainelAbas {
     void carregandoOrdens() {
         ordensCarregadas = false;
         erroOrdens = null;
-        resumoInicio.setText("Carregando resumo…");
+        cartoesInicio.setVisibility(View.GONE);
+        resumoInicio.setText(R.string.resumo_carregando);
+        resumoInicio.setVisibility(View.VISIBLE);
         atualizarRelatorio();
     }
 
     void erroAoCarregarOrdens(Exception erro) {
         erroOrdens = activity.mensagemDeErro(erro);
-        resumoInicio.setText(erroOrdens + "\nAbra Ordens para tentar novamente.");
+        resumoInicio.setText(activity.getString(R.string.resumo_falha, erroOrdens));
         atualizarRelatorio();
     }
 
@@ -166,7 +177,10 @@ final class PainelAbas {
         total = ordens.size();
         ordensCarregadas = true;
         erroOrdens = null;
-        resumoInicio.setText("Total de ordens: " + total + "\n\n" + contagemPorStatus());
+        totalInicio.setText(NumberFormat.getIntegerInstance().format(total));
+        statusInicio.setText(contagemPorStatus());
+        resumoInicio.setVisibility(View.GONE);
+        cartoesInicio.setVisibility(View.VISIBLE);
         atualizarRelatorio();
         atualizarLinhasRegistros();
     }

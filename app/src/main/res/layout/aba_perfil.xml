@@ -15,27 +15,39 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:text="Perfil"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="28sp"
-            android:textStyle="bold"
+            android:textAppearance="@style/TextoTela.Titulo"
             android:accessibilityHeading="true" />
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="Conta do Serviço Mobile"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp" />
-        <TextView
-            android:id="@+id/emailPerfil"
+            android:background="@drawable/fundo_painel"
+            android:orientation="vertical"
+            android:padding="18dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="@string/perfil_sessao"
+                android:textAppearance="@style/TextoTela.Apoio" />
+            <TextView
+                android:id="@+id/emailPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextoTela.Secao" />
+        </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/acessibilidadePerfil"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text=""
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp" />
+            android:minHeight="48dp"
+            android:text="@string/perfil_configuracoes"
+            app:icon="@drawable/ic_configuracoes"
+            app:iconGravity="textStart" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/sairPerfil"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"

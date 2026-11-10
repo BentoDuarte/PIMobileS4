@@ -1,26 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:paddingHorizontal="20dp" android:paddingVertical="8dp" android:background="?attr/colorSurfaceContainer">
-<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Ordens de serviço" android:textSize="28sp" android:textStyle="bold" android:accessibilityHeading="true" android:textColor="?attr/colorOnSurface" android:layout_marginBottom="12dp"/>
-<com.google.android.material.textfield.TextInputLayout
-    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    android:hint="Buscar ordem">
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/busca" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="text"  android:imeOptions="actionSearch" />
-</com.google.android.material.textfield.TextInputLayout>
-<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@id/filtro" android:text="Filtrar por status" />
-<Spinner android:id="@+id/filtro" android:layout_width="match_parent" android:layout_height="48dp"/>
-<com.google.android.material.button.MaterialButton android:id="@+id/nova" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="Criar ordem" android:layout_marginTop="8dp" app:icon="@drawable/ic_adicionar" app:iconGravity="textStart" app:iconSize="18dp" />
-<TextView android:id="@+id/contador" android:textColor="?attr/colorOnSurfaceVariant" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="8dp"/>
-<com.google.android.material.button.MaterialButton
-    style="@style/Widget.Material3.Button.OutlinedButton"
-    android:id="@+id/recarregarOrdens"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Tentar novamente"
-    android:visibility="gone" />
-<ListView android:id="@+id/lista" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:dividerHeight="8dp"/>
-<com.google.android.material.button.MaterialButton style="@style/Widget.Material3.Button.OutlinedButton" android:id="@+id/sair" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="Sair" android:layout_marginTop="8dp" app:icon="@drawable/ic_sair" app:iconGravity="textStart" app:iconSize="18dp" />
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurfaceContainer"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:accessibilityHeading="true"
+        android:text="@string/ordens_titulo"
+        android:textAppearance="@style/TextoTela.Titulo" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="@string/ordens_busca"
+        app:endIconMode="clear_text">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/busca"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionSearch"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:labelFor="@id/filtro"
+        android:text="@string/filtrar_status"
+        android:textAppearance="@style/TextoTela.Apoio" />
+
+    <Spinner
+        android:id="@+id/filtro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/nova"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="@string/nova_ordem"
+        app:icon="@drawable/ic_adicionar"
+        app:iconGravity="textStart" />
+
+    <TextView
+        android:id="@+id/contador"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:accessibilityLiveRegion="polite"
+        android:paddingVertical="8dp"
+        android:textAppearance="@style/TextoTela.Apoio" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/recarregarOrdens"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/tentar_novamente"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/lista"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dp"
+        android:paddingBottom="12dp" />
 </LinearLayout>

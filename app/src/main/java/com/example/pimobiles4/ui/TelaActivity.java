@@ -64,7 +64,7 @@ public abstract class TelaActivity extends AppCompatActivity {
         engrenagem.setOnClickListener(v -> abrirAcessibilidade());
     }
 
-    private void abrirAcessibilidade() {
+    final void abrirAcessibilidade() {
         boolean[] selecionadas = {textoAmpliado, altoContraste};
         String[] opcoes = {getString(R.string.texto_ampliado), getString(R.string.alto_contraste)};
         new MaterialAlertDialogBuilder(this)

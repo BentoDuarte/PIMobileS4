@@ -3,6 +3,8 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.widget.*;
 import android.text.*;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,9 +54,14 @@ public class ListaOrdensActivity extends BaseActivity {
             public void onTextChanged(CharSequence s,int st,int b,int c){atualizar();}
             public void afterTextChanged(Editable e){}
         });
-        findViewById(R.id.nova).setOnClickListener(v->startActivity(new Intent(this,FormularioOrdemActivity.class)));
+        findViewById(R.id.nova).setOnClickListener(v -> abrirNovaOrdem());
         findViewById(R.id.recarregarOrdens).setOnClickListener(v -> carregar());
     }
+
+    void abrirNovaOrdem() {
+        startActivity(new Intent(this, FormularioOrdemActivity.class));
+    }
+
     @Override protected void onStart() {
         super.onStart();
         if (repo != null) {
@@ -107,7 +114,15 @@ public class ListaOrdensActivity extends BaseActivity {
             }
             visiveis=novas;
             adapter.notifyDataSetChanged();
-            ((TextView)findViewById(R.id.contador)).setText(novas.isEmpty()?"Nenhuma ordem encontrada":novas.size() == 1 ? "1 ordem encontrada" : novas.size() + " ordens encontradas");
+            TextView contador = findViewById(R.id.contador);
+            if (novas.isEmpty()) {
+                contador.setText(ordens.isEmpty()
+                        ? R.string.ordens_sem_registros : R.string.ordens_sem_resultados);
+            } else {
+                int quantidade = novas.size();
+                contador.setText(getResources().getQuantityString(
+                        R.plurals.ordens_encontradas, quantidade, quantidade));
+            }
         }catch(IllegalStateException e){aviso(e);}
     }
 
@@ -153,10 +168,19 @@ public class ListaOrdensActivity extends BaseActivity {
             Cliente cliente = ordem.getCliente();
 
             TextView resumo = item.findViewById(R.id.resumoOrdem);
-            resumo.setText((aberta ? "▴ " : "▾ ") + "OS #" + id + " • " + ordem.getTitulo()
-                    + "\n" + cliente.getNome() + "\n" + ordem.getStatus()
-                    + " • Prioridade " + ordem.getPrioridade());
-            ViewCompat.setStateDescription(resumo, aberta ? "Expandida" : "Recolhida");
+            String texto = getString(R.string.ordem_resumo, id, ordem.getTitulo(), cliente.getNome(),
+                    ordem.getStatus(), ordem.getPrioridade());
+            SpannableString resumoEstilizado = new SpannableString(texto);
+            int fimTitulo = texto.indexOf('\n');
+            resumoEstilizado.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
+                    0, fimTitulo, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            resumoEstilizado.setSpan(new RelativeSizeSpan(1.14f),
+                    0, fimTitulo, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            resumo.setText(resumoEstilizado);
+            resumo.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0,
+                    aberta ? R.drawable.ic_recolher : R.drawable.ic_expandir, 0);
+            ViewCompat.setStateDescription(resumo,
+                    getString(aberta ? R.string.ordem_expandida : R.string.ordem_recolhida));
             resumo.setOnClickListener(v -> {
                 expandida = expandida == id ? 0 : id;
                 notifyDataSetChanged();

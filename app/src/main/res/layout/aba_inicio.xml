@@ -5,41 +5,107 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurfaceContainer"
     android:fillViewport="true">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Início"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:accessibilityHeading="true" />
+            android:accessibilityHeading="true"
+            android:text="@string/inicio_titulo"
+            android:textAppearance="@style/TextoTela.Titulo" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
-            android:text="Acompanhe suas ordens de serviço e veja como elas estão distribuídas por status."
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp" />
+            android:text="@string/inicio_subtitulo"
+            android:textAppearance="@style/TextoTela.Apoio" />
+
         <TextView
             android:id="@+id/resumoInicio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Carregando resumo…"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp" />
+            android:layout_marginBottom="12dp"
+            android:accessibilityLiveRegion="polite"
+            android:text="@string/resumo_carregando"
+            android:textAppearance="@style/TextoTela.Apoio" />
+
+        <LinearLayout
+            android:id="@+id/cartoesInicio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/fundo_resumo"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inicio_total"
+                    android:textAppearance="@style/TextoTela.Secao"
+                    android:textColor="?attr/colorOnPrimaryContainer" />
+
+                <TextView
+                    android:id="@+id/totalInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextoTela.Contagem" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/fundo_painel"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:accessibilityHeading="true"
+                    android:text="@string/inicio_status"
+                    android:textAppearance="@style/TextoTela.Secao" />
+
+                <TextView
+                    android:id="@+id/statusInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="6dp"
+                    android:textAppearance="@style/TextoTela.Apoio" />
+            </LinearLayout>
+        </LinearLayout>
+
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/abrirOrdens"
+            android:id="@+id/novaOrdemInicio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
-            android:text="Ver minhas ordens"
+            android:text="@string/nova_ordem"
+            app:icon="@drawable/ic_adicionar"
+            app:iconGravity="textStart" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/abrirOrdens"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/ver_ordens"
             app:icon="@drawable/ic_ordens"
             app:iconGravity="textStart" />
     </LinearLayout>
