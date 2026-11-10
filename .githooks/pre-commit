@@ -1,12 +1,36 @@
 #!/bin/sh
+set -eu
 
-echo "Executando os testes unitários do Android..."
+echo "Verificando os arquivos selecionados para o commit..."
+git diff --cached --check
 
-case "$(uname -s)" in
-    MINGW*|MSYS*|CYGWIN*)
-        exec ./gradlew.bat :app:testDebugUnitTest
-        ;;
-    *)
-        exec sh ./gradlew :app:testDebugUnitTest
-        ;;
-esac
+# Exporte o índice para que arquivos fora do commit não escondam dependências ausentes.
+temp_base=$(cd "${TMPDIR:-/tmp}" && pwd -P)
+snapshot=$(mktemp -d "$temp_base/pimobiles4-commit.XXXXXX")
+limpar() {
+    destino=$(cd "$snapshot" && pwd -P) || return
+    case "$destino" in
+        "$temp_base"/pimobiles4-commit.*) rm -rf -- "$destino" ;;
+    esac
+}
+trap limpar EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+git checkout-index --all --prefix="$snapshot/"
+if [ -f local.properties ]; then
+    cp local.properties "$snapshot/local.properties"
+fi
+
+echo "Executando Android Lint e testes unitários antes do commit..."
+(
+    cd "$snapshot"
+    case "$(uname -s)" in
+        MINGW*|MSYS*|CYGWIN*)
+            ./gradlew.bat --build-cache :app:lintDebug :app:testDebugUnitTest
+            ;;
+        *)
+            sh ./gradlew --build-cache :app:lintDebug :app:testDebugUnitTest
+            ;;
+    esac
+)
