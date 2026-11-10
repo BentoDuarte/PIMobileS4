@@ -13,19 +13,16 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="4dp"
             android:text="Relatórios"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="28sp"
-            android:textStyle="bold"
+            android:textAppearance="@style/TextoTela.Titulo"
             android:accessibilityHeading="true" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:text="Escolha um status para gerar um PDF com a quantidade de ordens correspondente."
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp" />
+            android:textAppearance="@style/TextoTela.Apoio" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,15 +32,26 @@
             android:id="@+id/filtroRelatorio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             android:minHeight="48dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:accessibilityHeading="true"
+            android:text="@string/relatorio_previa"
+            android:textAppearance="@style/TextoTela.Secao" />
         <TextView
             android:id="@+id/resumoRelatorio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:accessibilityLiveRegion="polite"
+            android:background="@drawable/fundo_painel"
+            android:lineSpacingExtra="4dp"
+            android:padding="18dp"
             android:text="Carregando contagem…"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp" />
+            android:textAppearance="@style/TextoTela.Apoio" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/gerarRelatorio"
             android:layout_width="match_parent"
