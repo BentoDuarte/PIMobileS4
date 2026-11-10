@@ -100,14 +100,14 @@
                 android:id="@+id/enviarConta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp" />
+                android:minHeight="?attr/tamanhoAlvoToque" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/voltarLogin"
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="?attr/tamanhoAlvoToque"
                 android:text="Voltar ao login" app:icon="@drawable/ic_voltar" app:iconGravity="textStart" app:iconSize="18dp" />
         </LinearLayout>
     </LinearLayout>

@@ -35,8 +35,8 @@
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/menuAcessibilidade"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="?attr/tamanhoAlvoToque"
+            android:layout_height="?attr/tamanhoAlvoToque"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/acessibilidade"
             android:scaleType="center"

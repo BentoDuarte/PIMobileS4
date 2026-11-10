@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:minHeight="48dp"
+                android:minHeight="?attr/tamanhoAlvoToque"
                 android:text="Editar"
                 app:icon="@drawable/ic_editar"
                 app:iconGravity="textStart" />
@@ -65,7 +65,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:minHeight="48dp"
+                android:minHeight="?attr/tamanhoAlvoToque"
                 android:text="Excluir"
                 android:textColor="?attr/colorError"
                 app:icon="@drawable/ic_excluir"
@@ -78,7 +78,7 @@
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
+            android:minHeight="?attr/tamanhoAlvoToque"
             android:text="Ver detalhes completos"
             app:icon="@drawable/ic_documento"
             app:iconGravity="textStart" />

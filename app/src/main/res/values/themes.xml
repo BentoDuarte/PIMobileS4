@@ -25,6 +25,7 @@
         <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="android:fontFamily">sans</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="tamanhoAlvoToque">48dp</item>
 
     </style>
 
@@ -42,6 +43,52 @@
         <item name="colorOutline">#49372C</item>
         <item name="colorOutlineVariant">#756053</item>
         <item name="colorError">#75140F</item>
+    </style>
+
+    <style name="Theme.PIMobileS4.Escuro" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#F6BF9F</item>
+        <item name="colorOnPrimary">#442319</item>
+        <item name="colorPrimaryContainer">#603A2B</item>
+        <item name="colorOnPrimaryContainer">#FFE0CD</item>
+        <item name="colorSecondary">#E8BAA6</item>
+        <item name="colorOnSecondary">#43291F</item>
+        <item name="colorSecondaryContainer">#584034</item>
+        <item name="colorOnSecondaryContainer">#FFE1D2</item>
+        <item name="colorSurface">#211B18</item>
+        <item name="colorSurfaceVariant">#3A302A</item>
+        <item name="colorSurfaceContainer">#2B2420</item>
+        <item name="colorOnSurface">#F7ECE5</item>
+        <item name="colorOnSurfaceVariant">#D9C5B9</item>
+        <item name="colorOutline">#B79D8F</item>
+        <item name="colorOutlineVariant">#685247</item>
+        <item name="colorError">#FFB4AB</item>
+        <item name="colorOnError">#690005</item>
+        <item name="android:colorBackground">?attr/colorSurface</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="tamanhoAlvoToque">48dp</item>
+    </style>
+
+    <style name="Theme.PIMobileS4.Escuro.Contraste" parent="Theme.PIMobileS4.Escuro">
+        <item name="colorPrimary">#FFD9C2</item>
+        <item name="colorOnPrimary">#231008</item>
+        <item name="colorPrimaryContainer">#4F2818</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSecondary">#FFD7C4</item>
+        <item name="colorOnSecondary">#231008</item>
+        <item name="colorOnSecondaryContainer">@color/white</item>
+        <item name="colorSurface">#171310</item>
+        <item name="colorSurfaceContainer">#211915</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnSurfaceVariant">#F3DED3</item>
+        <item name="colorOutline">#E6CCBE</item>
+        <item name="colorOutlineVariant">#B79989</item>
+        <item name="colorError">#FFC5BF</item>
+    </style>
+
+    <style name="Overlay.PIMobileS4.ToqueAmpliado" parent="">
+        <item name="tamanhoAlvoToque">56dp</item>
     </style>
 
 </resources>

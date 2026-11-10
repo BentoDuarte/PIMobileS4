@@ -2,7 +2,15 @@
     <string name="app_name">Ordens de Serviço</string>
     <string name="marca_app">Serviço Mobile</string>
     <string name="acessibilidade">Acessibilidade</string>
-    <string name="texto_ampliado">Texto ampliado (+20%)</string>
+    <string name="tamanho_texto">Tamanho do texto</string>
+    <string name="tamanho_texto_ajuda">Os aumentos são aplicados sobre o tamanho de texto do Android.</string>
+    <string name="texto_padrao">Padrão do Android</string>
+    <string name="texto_mais_10">Maior (+10%)</string>
+    <string name="texto_mais_20">Grande (+20%)</string>
+    <string name="texto_mais_40">Muito grande (+40%)</string>
+    <string name="ajustes_visuais">Ajustes visuais e de toque</string>
+    <string name="tema_escuro">Tema escuro</string>
+    <string name="botoes_maiores">Botões maiores</string>
     <string name="alto_contraste">Alto contraste</string>
     <string name="aplicar">Aplicar</string>
     <string name="cancelar">Cancelar</string>
