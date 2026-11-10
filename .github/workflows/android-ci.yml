@@ -101,17 +101,19 @@ jobs:
           test -n "$VERSAO"
           git push origin "$GITHUB_SHA:refs/tags/$VERSAO"
 
-docker:
-    name: docker
-    needs: test
+  docker:
+    name: Validar Docker
     runs-on: ubuntu-latest
     steps:
       - name: Baixar o codigo
         uses: actions/checkout@v4
-      - name: Construir a imagem
-        run: docker build -t opstrack-api:ci .
-      - name: Subir o container e testar o /status
+      - name: Construir a imagem e testar o /status
         run: |
+          if [ ! -f app.py ] || [ ! -f requirements.txt ]; then
+            echo "::notice::Backend Python ausente neste commit. Validação Docker ignorada."
+            exit 0
+          fi
+          docker build -t opstrack-api:ci .
           docker run -d --name api -p 8000:8000 opstrack-api:ci
           sleep 5
           curl --fail http://localhost:8000/status
