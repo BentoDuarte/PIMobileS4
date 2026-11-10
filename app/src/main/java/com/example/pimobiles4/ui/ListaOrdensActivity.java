@@ -18,6 +18,7 @@ public class ListaOrdensActivity extends BaseActivity {
     private static final Pattern PREFIXO_OS = Pattern.compile("^(?:os\\s*#?\\s*|#\\s*)(?=\\d)");
     private EditText busca; private Spinner filtro;
     private FirebaseOrdemRepository repo;
+    private PainelAbas painel;
     private boolean listaDisponivel;
     private List<OrdemServico> ordens = Collections.emptyList();
     private List<OrdemServico> visiveis = new ArrayList<>();
@@ -25,8 +26,9 @@ public class ListaOrdensActivity extends BaseActivity {
     private OrdensAdapter adapter;
     private long expandida;
     @Override protected void onCreate(Bundle state) {
-        super.onCreate(state); if(isFinishing())return; tela(R.layout.activity_lista);
+        super.onCreate(state); if(isFinishing())return; tela(R.layout.activity_painel);
         repo = new FirebaseOrdemRepository();
+        painel = new PainelAbas(this, repo, state);
         if (state != null) expandida = state.getLong("ordemExpandida");
         busca=findViewById(R.id.busca); filtro=findViewById(R.id.filtro);
         ListView lista = findViewById(R.id.lista);
@@ -52,16 +54,19 @@ public class ListaOrdensActivity extends BaseActivity {
         });
         findViewById(R.id.nova).setOnClickListener(v->startActivity(new Intent(this,FormularioOrdemActivity.class)));
         findViewById(R.id.recarregarOrdens).setOnClickListener(v -> carregar());
-        findViewById(R.id.sair).setOnClickListener(v->{com.google.firebase.auth.FirebaseAuth.getInstance().signOut();startActivity(new Intent(this,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK));});
     }
     @Override protected void onStart() {
         super.onStart();
-        if (repo != null) carregar();
+        if (repo != null) {
+            carregar();
+            painel.atualizarRegistrosSeVisivel();
+        }
     }
 
     @Override protected void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
         state.putLong("ordemExpandida", expandida);
+        if (painel != null) painel.salvarEstado(state);
     }
 
     private void carregar() {
@@ -70,15 +75,18 @@ public class ListaOrdensActivity extends BaseActivity {
         listaDisponivel = false;
         tentarNovamente.setVisibility(View.GONE);
         contador.setText("Carregando ordens…");
+        painel.carregandoOrdens();
         repo.listar()
                 .addOnSuccessListener(this, resultado -> {
                     ordens = resultado;
                     listaDisponivel = true;
                     atualizar();
+                    painel.mostrarOrdens(ordens);
                 })
                 .addOnFailureListener(this, erro -> {
                     contador.setText(mensagemDeErro(erro));
                     tentarNovamente.setVisibility(View.VISIBLE);
+                    painel.erroAoCarregarOrdens(erro);
                 });
     }
 
@@ -114,6 +122,8 @@ public class ListaOrdensActivity extends BaseActivity {
                 ordens.removeIf(ordem -> ordem.getId() == id);
                 visiveis.removeIf(ordem -> ordem.getId() == id);
                 atualizar();
+                if (listaDisponivel) painel.mostrarOrdens(ordens);
+                painel.atualizarRegistrosSeVisivel();
                 Toast.makeText(this, "Ordem excluída", Toast.LENGTH_SHORT).show();
             } else {
                 aviso(resultado.getException());

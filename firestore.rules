@@ -11,6 +11,17 @@ service cloud.firestore {
       match /config/sequencia {
         allow read, create, update: if dono();
       }
+      match /registros/{id} {
+        allow read: if dono();
+        allow create: if dono()
+          && request.resource.data.keys().hasOnly(['ordemId', 'titulo', 'acao', 'status', 'data'])
+          && request.resource.data.ordemId is int
+          && request.resource.data.ordemId > 0
+          && request.resource.data.titulo is string
+          && request.resource.data.acao in ['CRIACAO', 'EDICAO', 'ALTERACAO_STATUS', 'EXCLUSAO']
+          && request.resource.data.status in ['ABERTA', 'EM_ANDAMENTO', 'CONCLUIDA', 'CANCELADA']
+          && request.resource.data.data == request.time;
+      }
     }
   }
 }

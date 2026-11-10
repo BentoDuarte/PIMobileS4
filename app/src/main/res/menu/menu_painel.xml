@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/aba_inicio" android:icon="@drawable/ic_inicio" android:title="Início" />
+    <item android:id="@+id/aba_ordens" android:icon="@drawable/ic_ordens" android:title="Ordens" />
+    <item android:id="@+id/aba_registros" android:icon="@drawable/ic_status" android:title="Registros" />
+    <item android:id="@+id/aba_relatorios" android:icon="@drawable/ic_documento" android:title="Relatórios" />
+    <item android:id="@+id/aba_perfil" android:icon="@drawable/ic_perfil" android:title="Perfil" />
+</menu>

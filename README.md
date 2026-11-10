@@ -98,6 +98,16 @@ A execução de número `N` usa a tag `1.1.N`, `versionName = 1.1.N` e `versionC
 
 Para que o APK do GitHub Actions acesse o Firebase, adicione o conteúdo completo do arquivo `app/google-services.json` ao secret `GOOGLE_SERVICES_JSON` em **Settings → Secrets and variables → Actions**. O workflow usa o secret apenas nas execuções da `main`.
 
+## Menu inferior
+
+- **Início** resume a quantidade total de ordens e a contagem por status.
+- **Ordens** permite buscar, filtrar, expandir, criar, editar e excluir ordens.
+- **Registros** mostra criação, edição, alteração de status e exclusão, com data e tipo de ação. A lista mostra o status atual das ordens existentes e preserva o status registrado quando uma ordem é excluída.
+- **Relatórios** gera um PDF com o total e a distribuição por status ou somente a contagem do status escolhido.
+- **Perfil** mostra a conta conectada e permite sair.
+
+Publique o conteúdo atualizado de `firestore.rules` antes de usar esta versão. As alterações das ordens e seus registros são salvos juntos no Firestore e precisam de conexão. O histórico começa com as ações feitas a partir desta versão.
+
 ## Validação e roteiro de conferência
 
 Ao abrir no Android Studio, confira:

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurfaceContainer"
+    android:fillViewport="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Início"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:accessibilityHeading="true" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Acompanhe suas ordens de serviço e veja como elas estão distribuídas por status."
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/resumoInicio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Carregando resumo…"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/abrirOrdens"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="Ver minhas ordens"
+            app:icon="@drawable/ic_ordens"
+            app:iconGravity="textStart" />
+    </LinearLayout>
+</ScrollView>

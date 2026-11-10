@@ -11,6 +11,14 @@ public final class OrdemPdf {
     public static void escrever(OrdemServico o,OutputStream out) throws IOException {
         String data=new SimpleDateFormat("dd/MM/yyyy HH:mm",Locale.getDefault()).format(new Date(o.getCriadaEm()));
         String texto="Ordem de Serviço #"+o.getId()+"\n"+o.getTitulo()+"\n\nStatus: "+o.getStatus()+"\nPrioridade: "+o.getPrioridade()+"\nCriada em: "+data+"\n\nCliente: "+o.getCliente().getNome()+"\nTelefone: "+o.getCliente().getTelefone()+"\nE-mail: "+o.getCliente().getEmail()+"\nResponsável: "+o.getResponsavel()+"\n\nDescrição\n"+o.getDescricao();
+        escreverDocumento(texto, "OS #" + o.getId(), out);
+    }
+
+    public static void escreverRelatorio(String texto, OutputStream out) throws IOException {
+        escreverDocumento(texto, "Relatório de ordens", out);
+    }
+
+    private static void escreverDocumento(String texto, String rodape, OutputStream out) throws IOException {
         Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);paint.setTextSize(12);paint.setColor(Color.rgb(23,37,61));
         PdfDocument pdf = new PdfDocument();
         try {
@@ -21,7 +29,7 @@ public final class OrdemPdf {
                     if(y>780){
                         if(page!=null)pdf.finishPage(page);
                         page=pdf.startPage(new PdfDocument.PageInfo.Builder(595,842,++n).create()); y=48;
-                        page.getCanvas().drawText("SERVIÇO MOBILE • OS #"+o.getId()+" • Página "+n,40,815,paint);
+                        page.getCanvas().drawText("SERVIÇO MOBILE • "+rodape+" • Página "+n,40,815,paint);
                     }
                     int count=resto.isEmpty()?0:paint.breakText(resto,true,515,null);
                     if(count==0&&!resto.isEmpty())count=1;
