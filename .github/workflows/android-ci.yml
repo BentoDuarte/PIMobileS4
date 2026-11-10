@@ -114,7 +114,7 @@ jobs:
           credencial="$RUNNER_TEMP/firebase-docker-test.json"
           printf '%s\n' '{"type":"authorized_user","client_id":"ci","client_secret":"ci","refresh_token":"ci"}' > "$credencial"
           chmod 644 "$credencial"
-          trap 'if [ "$?" -ne 0 ]; then docker logs api-email-ci 2>/dev/null || true; fi; docker rm -f api-email-ci >/dev/null 2>&1 || true' EXIT
+          trap 'if [ "$?" -ne 0 ]; then docker logs api-email-ci || true; fi; docker rm -f api-email-ci >/dev/null 2>&1 || true' EXIT
 
           docker build -t pimobiles4-api-email:ci .
           docker run -d --name api-email-ci -p 127.0.0.1:8080:8080 \
@@ -129,6 +129,19 @@ jobs:
             -e IMAP_SENHA=senha-ficticia \
             pimobiles4-api-email:ci
 
-          resposta=$(curl --fail --silent --show-error --retry 20 --retry-connrefused \
-            --retry-delay 1 --retry-max-time 35 --max-time 5 http://127.0.0.1:8080/status)
-          test "$resposta" = '{"status":"ok"}'
+          for tentativa in {1..30}; do
+            if resposta=$(curl --fail --silent --max-time 2 http://127.0.0.1:8080/status) \
+              && [ "$resposta" = '{"status":"ok"}' ]; then
+              echo "A API respondeu ao GET /status."
+              exit 0
+            fi
+
+            if [ "$(docker inspect --format '{{.State.Running}}' api-email-ci)" != "true" ]; then
+              echo "::error::O contêiner da API encerrou antes de responder ao /status."
+              exit 1
+            fi
+            sleep 1
+          done
+
+          echo "::error::A API não respondeu com o status esperado após 30 tentativas."
+          exit 1
