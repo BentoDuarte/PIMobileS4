@@ -173,4 +173,11 @@ public class FormularioOrdemActivity extends BaseActivity {
             } else aviso(resultado.getException());
         });
     }
+
+    @Override protected void onPostCreate(Bundle state) {
+        super.onPostCreate(state);
+        if (!isFinishing() && getIntent().getLongExtra("ordemId", 0) == 0) {
+            SugestoesOrdem.configurar(this, repo);
+        }
+    }
 }
