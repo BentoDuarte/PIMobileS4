@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.widget.EditText;
 import com.example.pimobiles4.ui.ListaOrdensActivity;
 import com.example.pimobiles4.ui.ContaActivity;
+import com.example.pimobiles4.ui.FormularioOrdemActivity;
 import com.example.pimobiles4.ui.TelaActivity;
+import com.example.pimobiles4.model.RascunhoPedido;
 public class MainActivity extends TelaActivity {
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
@@ -58,8 +60,24 @@ public class MainActivity extends TelaActivity {
     private void abrirConta(boolean cadastro, EditText email) {
         startActivity(new Intent(this, ContaActivity.class)
                 .putExtra(ContaActivity.EXTRA_CADASTRO, cadastro)
-                .putExtra(ContaActivity.EXTRA_EMAIL, email.getText().toString().trim()));
+                .putExtra(ContaActivity.EXTRA_EMAIL, email.getText().toString().trim())
+                .putExtra(RascunhoPedido.EXTRA_TEXTO, textoDoPedido()));
     }
 
-    private void abrir() {startActivity(new Intent(this,ListaOrdensActivity.class));finish();}
+    private void abrir() {
+        Intent painel = new Intent(this, ListaOrdensActivity.class);
+        String texto = textoDoPedido();
+        if (texto.isEmpty()) {
+            startActivity(painel);
+        } else {
+            Intent formulario = new Intent(this, FormularioOrdemActivity.class)
+                    .putExtra(RascunhoPedido.EXTRA_TEXTO, texto);
+            startActivities(new Intent[]{painel, formulario});
+        }
+        finish();
+    }
+
+    private String textoDoPedido() {
+        return RascunhoPedido.limitarTexto(getIntent().getStringExtra(RascunhoPedido.EXTRA_TEXTO));
+    }
 }

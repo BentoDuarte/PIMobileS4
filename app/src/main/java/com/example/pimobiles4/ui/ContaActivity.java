@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.pimobiles4.R;
+import com.example.pimobiles4.model.RascunhoPedido;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseNetworkException;
@@ -120,8 +121,16 @@ public class ContaActivity extends TelaActivity {
             envio.tarefa = null;
             atualizarEnvio();
             if (cadastro && resultado.isSuccessful()) {
-                startActivity(new Intent(this, ListaOrdensActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                Intent painel = new Intent(this, ListaOrdensActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                String texto = RascunhoPedido.limitarTexto(getIntent().getStringExtra(RascunhoPedido.EXTRA_TEXTO));
+                if (texto.isEmpty()) {
+                    startActivity(painel);
+                } else {
+                    Intent formulario = new Intent(this, FormularioOrdemActivity.class)
+                            .putExtra(RascunhoPedido.EXTRA_TEXTO, texto);
+                    startActivities(new Intent[]{painel, formulario});
+                }
                 return;
             }
             Exception erro = resultado.getException();

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lendo_pedido_compartilhado">Preparando o rascunho do pedido…</string>
+    <string name="pedido_compartilhado_falha">Não foi possível abrir o pedido. Compartilhe texto ou um PDF de até 8 MB e 10 páginas.</string>
+    <string name="pedido_compartilhado_sem_texto">O pedido está sem texto selecionável. Para imagens, use a opção de rascunho por foto.</string>
+</resources>
