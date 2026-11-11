@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="buscar_ordens_parecidas">Buscar ordens parecidas</string>
+    <string name="ordens_parecidas">Ordens parecidas</string>
+    <string name="sugestoes_buscando">Buscando ordens…</string>
+    <string name="sugestoes_pouco_texto">Informe um título ou uma descrição com mais detalhes.</string>
+    <string name="sugestoes_vazias">Nenhuma ordem parecida foi encontrada.</string>
+    <string name="sugestoes_item">OS #%1$d • %2$s\n%3$s</string>
+</resources>
