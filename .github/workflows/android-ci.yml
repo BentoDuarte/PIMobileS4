@@ -17,6 +17,11 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'push' && github.ref || github.run_id }}
+  cancel-in-progress: false
+  queue: max
+
 jobs:
   validar:
     name: Validar Android
@@ -27,6 +32,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Configurar Java
         uses: actions/setup-java@v4
@@ -49,7 +56,7 @@ jobs:
         id: versao
         if: github.event_name == 'push'
         run: |
-          versao="1.1.${GITHUB_RUN_NUMBER}"
+          versao=$(bash .github/scripts/proxima-versao.sh "$GITHUB_SHA")
           echo "ANDROID_VERSION_CODE=$((GITHUB_RUN_NUMBER + 1))" >> "$GITHUB_ENV"
           echo "ANDROID_VERSION_NAME=$versao" >> "$GITHUB_ENV"
           echo "nome=$versao" >> "$GITHUB_OUTPUT"
@@ -93,13 +100,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Criar tag no commit validado
         env:
           VERSAO: ${{ needs.validar.outputs.versao }}
         run: |
           test -n "$VERSAO"
-          git push origin "$GITHUB_SHA:refs/tags/$VERSAO"
+          tag="refs/tags/$VERSAO"
+          if git show-ref --verify --quiet "$tag"; then
+            if [ "$(git rev-parse "$tag^{commit}")" != "$GITHUB_SHA" ]; then
+              echo "::error::A tag $VERSAO já aponta para outro commit."
+              exit 1
+            fi
+            exit 0
+          fi
+          git push origin "$GITHUB_SHA:$tag"
 
   docker:
     name: Validar Docker

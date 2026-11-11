@@ -84,6 +84,10 @@ O gancho valida o conteúdo do índice do Git, ou seja, a versão que entraria n
 .\gradlew.bat -p api-email test
 ```
 
-Nos PRs e pushes para `main`, o GitHub Actions roda o lint, os testes unitários e o build do Android. Nos pushes para `main`, disponibiliza o APK de depuração em **Actions → Validacao Android → Artifacts** e publica a tag `1.1.N`, em que `N` é o número da execução. O código de versão do APK é `N + 1`. Para que esse APK acesse o Firebase, configure o secret `GOOGLE_SERVICES_JSON` com o conteúdo do arquivo do Android. O workflow lê esse secret nos builds de `main`.
+Nos PRs e pushes para `main`, o GitHub Actions roda o lint, os testes unitários e o build do Android. Nos pushes para `main`, disponibiliza o APK de depuração em **Actions → Validacao Android → Artifacts** e publica uma tag com a mesma versão exibida no APK.
+
+A série começa em `2.0.0`. Depois disso, o workflow usa a última tag `2.x.y` presente no histórico do commit. Se houver um commit `feat:` ou `feat(escopo):`, ou um merge de PR de uma branch `feature/` ou `feat/`, aumenta a versão minor e zera o patch. Por exemplo, `2.1.3` vira `2.2.0`. Os demais casos incrementam o patch, como `2.1.3` para `2.1.4`. Um commit já tagueado mantém sua versão ao repetir o workflow.
+
+O código de versão do APK é o número da execução mais um. Para que o APK acesse o Firebase, configure o secret `GOOGLE_SERVICES_JSON` com o conteúdo do arquivo do Android. O workflow lê esse secret nos builds de `main`.
 
 O job **Validar Docker** executa os testes da API Spring Boot durante o build da imagem, inicia o contêiner com credenciais fictícias e verifica se `GET /status` responde. A validação desativa o agendamento e não consulta o IMAP nem grava no Firestore.
