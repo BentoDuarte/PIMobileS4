@@ -43,6 +43,16 @@ Telefone, e-mail do cliente e responsável são opcionais no formulário. **Méd
 
 A compilação pode gerar um APK sem o `google-services.json`, mas o login e o acesso às ordens dependem da configuração do Firebase.
 
+### Demonstrar o rascunho por foto
+
+Salve na galeria do emulador um print com um pedido fictício. Em **Nova ordem → Criar rascunho de uma foto**, selecione o print e confira os campos sugeridos antes de salvar. Use um exemplo como este:
+
+```text
+Assunto: Falha no Wi-Fi
+Cliente: Ana Demonstração
+Descrição: A conexão cai na recepção durante a manhã.
+```
+
 ## Rodar a API de e-mail
 
 Siga o [guia da API](api-email/README.md) para configurar o projeto Firebase, o UID da conta, as credenciais do servidor, a caixa IMAP e o token do endpoint. Se usar um JSON de conta de serviço para rodar a API localmente, guarde-o fora do repositório. O `google-services.json` configura o Android, enquanto a conta de serviço autoriza a API a gravar no Firestore.
