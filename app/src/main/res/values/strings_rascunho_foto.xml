@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="importar_foto">Criar rascunho de uma foto</string>
+    <string name="lendo_foto">Lendo texto da foto…</string>
+    <string name="foto_sem_texto">Nenhum texto foi encontrado. Experimente uma imagem mais nítida.</string>
+    <string name="foto_falha">Não foi possível ler a foto selecionada.</string>
+    <string name="revisar_rascunho">Revise os dados sugeridos antes de salvar.</string>
+</resources>
