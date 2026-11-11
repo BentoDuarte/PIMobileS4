@@ -16,6 +16,14 @@
         <activity android:name=".ui.DetalhesOrdemActivity" android:exported="false"/>
         <activity android:name=".ui.ContaActivity" android:exported="false"
             android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".ui.ReceberPedidoActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="application/pdf" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">
