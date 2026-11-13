@@ -1,4 +1,5 @@
 package com.example.pimobiles4.ui;
+import android.content.ActivityNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.util.Patterns;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.pimobiles4.R;
@@ -14,11 +16,15 @@ import com.example.pimobiles4.data.*;
 import com.example.pimobiles4.model.*;
 import com.example.pimobiles4.util.LeitorFotoPedido;
 import com.google.android.gms.tasks.Task;
+import java.io.File;
+import java.io.IOException;
 public class FormularioOrdemActivity extends BaseActivity {
     private OrdemServico ordem; private FirebaseOrdemRepository repo;
     private boolean formularioCarregado;
     private EditText titulo,cliente,telefone,email,descricao,responsavel; private Spinner prioridade;
     private TextView importarFoto;
+    private View tirarFoto;
+    private File capturaPendente;
     private LeituraFoto leituraFoto;
 
     public static final class LeituraFoto extends ViewModel {
@@ -27,6 +33,8 @@ public class FormularioOrdemActivity extends BaseActivity {
 
     private final ActivityResultLauncher<PickVisualMediaRequest> escolherFoto =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::lerFoto);
+    private final ActivityResultLauncher<Uri> capturarFoto =
+            registerForActivityResult(new ActivityResultContracts.TakePicture(), this::receberCaptura);
     @Override protected void onCreate(Bundle state){
         super.onCreate(state);if(isFinishing())return;tela(R.layout.activity_formulario);
         repo=new FirebaseOrdemRepository();
@@ -40,6 +48,9 @@ public class FormularioOrdemActivity extends BaseActivity {
             ordem = new OrdemServico();
             prioridade.setSelection(Prioridade.MEDIA.ordinal());
             configurarImportacaoFoto();
+            if (state != null && state.getString("capturaPendente") != null) {
+                capturaPendente = new File(diretorioFotos(), state.getString("capturaPendente"));
+            }
             if (state == null) {
                 preencherRascunho(getIntent().getStringExtra(RascunhoPedido.EXTRA_TEXTO));
             } else if (state.getBoolean("rascunhoPreenchido")) {
@@ -72,11 +83,48 @@ public class FormularioOrdemActivity extends BaseActivity {
     private void configurarImportacaoFoto() {
         leituraFoto = new ViewModelProvider(this).get(LeituraFoto.class);
         importarFoto = findViewById(R.id.importarFotoPedido);
+        tirarFoto = findViewById(R.id.tirarFotoPedido);
+        tirarFoto.setVisibility(View.VISIBLE);
+        tirarFoto.setOnClickListener(v -> abrirCamera());
         importarFoto.setVisibility(View.VISIBLE);
         importarFoto.setOnClickListener(v -> escolherFoto.launch(
                 new PickVisualMediaRequest.Builder()
                         .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                         .build()));
+    }
+
+    private File diretorioFotos() {
+        return new File(getCacheDir(), "fotos-pedido");
+    }
+
+    private Uri uriCaptura(File arquivo) {
+        return FileProvider.getUriForFile(this, getPackageName() + ".fotos", arquivo);
+    }
+
+    private void abrirCamera() {
+        if (capturaPendente != null || leituraFoto.tarefa != null) return;
+        try {
+            File pasta = diretorioFotos();
+            if (!pasta.isDirectory() && !pasta.mkdirs()) throw new IOException("Pasta indisponível");
+            capturaPendente = File.createTempFile("pedido-", ".jpg", pasta);
+            capturarFoto.launch(uriCaptura(capturaPendente));
+        } catch (IOException | ActivityNotFoundException | SecurityException erro) {
+            if (capturaPendente != null) capturaPendente.delete();
+            capturaPendente = null;
+            Toast.makeText(this, R.string.camera_pedido_falha, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void receberCaptura(boolean confirmada) {
+        File arquivo = capturaPendente;
+        capturaPendente = null;
+        if (arquivo == null) return;
+        if (!confirmada || leituraFoto == null || leituraFoto.tarefa != null) {
+            arquivo.delete();
+            return;
+        }
+        lerFoto(uriCaptura(arquivo));
+        leituraFoto.tarefa.addOnCompleteListener(resultado -> arquivo.delete());
     }
 
     @Override protected void onStart() {
@@ -93,6 +141,7 @@ public class FormularioOrdemActivity extends BaseActivity {
     private void acompanharFoto() {
         importarFoto.setText(R.string.lendo_foto);
         importarFoto.setEnabled(false);
+        tirarFoto.setEnabled(false);
         findViewById(R.id.salvar).setEnabled(false);
         Task<String> tarefa = leituraFoto.tarefa;
         tarefa.addOnCompleteListener(this, resultado -> {
@@ -100,6 +149,7 @@ public class FormularioOrdemActivity extends BaseActivity {
             leituraFoto.tarefa = null;
             importarFoto.setText(R.string.importar_foto);
             importarFoto.setEnabled(true);
+            tirarFoto.setEnabled(true);
             findViewById(R.id.salvar).setEnabled(true);
             if (!resultado.isSuccessful()) {
                 Toast.makeText(this, R.string.foto_falha, Toast.LENGTH_LONG).show();
@@ -127,6 +177,7 @@ public class FormularioOrdemActivity extends BaseActivity {
 
     @Override protected void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
+        if (capturaPendente != null) state.putString("capturaPendente", capturaPendente.getName());
         state.putBoolean("formularioCarregado", formularioCarregado);
         View revisao = findViewById(R.id.revisarRascunho);
         state.putBoolean("rascunhoPreenchido", revisao != null && revisao.getVisibility() == View.VISIBLE);
@@ -151,6 +202,7 @@ public class FormularioOrdemActivity extends BaseActivity {
         responsavel.setEnabled(habilitados);
         prioridade.setEnabled(habilitados);
         if (importarFoto != null) importarFoto.setEnabled(habilitados);
+        if (tirarFoto != null) tirarFoto.setEnabled(habilitados);
         findViewById(R.id.salvar).setEnabled(habilitados);
     }
     private String valor(EditText v){return v.getText().toString().trim();}

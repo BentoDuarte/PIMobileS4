@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="importar_foto">Criar rascunho de uma foto</string>
+    <string name="tirar_foto_pedido">Tirar foto do pedido</string>
+    <string name="camera_pedido_falha">Não foi possível abrir a câmera. Você pode escolher uma imagem da galeria.</string>
     <string name="lendo_foto">Lendo texto da foto…</string>
     <string name="foto_sem_texto">Nenhum texto foi encontrado. Experimente uma imagem mais nítida.</string>
     <string name="foto_falha">Não foi possível ler a foto selecionada.</string>

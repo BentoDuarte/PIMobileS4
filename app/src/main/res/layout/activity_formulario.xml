@@ -4,6 +4,15 @@
 <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/nova_ordem" android:textAppearance="@style/TextoTela.Titulo" android:accessibilityHeading="true" android:layout_marginBottom="4dp" android:id="@+id/cabecalho"/>
 <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Informe os dados do serviço. Os campos com * são obrigatórios." android:textAppearance="@style/TextoTela.Apoio" android:layout_marginBottom="16dp"/>
 <com.google.android.material.button.MaterialButton
+    android:id="@+id/tirarFotoPedido"
+    style="@style/Widget.Material3.Button.OutlinedButton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:minHeight="?attr/tamanhoAlvoToque"
+    android:text="@string/tirar_foto_pedido"
+    android:visibility="gone" />
+<com.google.android.material.button.MaterialButton
     android:id="@+id/importarFotoPedido"
     style="@style/Widget.Material3.Button.OutlinedButton"
     android:layout_width="match_parent"

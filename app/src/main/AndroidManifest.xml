@@ -11,6 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PIMobileS4">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fotos"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/caminhos_fotos" />
+        </provider>
         <activity android:name=".ui.ListaOrdensActivity" android:exported="false"/>
         <activity android:name=".ui.FormularioOrdemActivity" android:exported="false"/>
         <activity android:name=".ui.DetalhesOrdemActivity" android:exported="false"/>
