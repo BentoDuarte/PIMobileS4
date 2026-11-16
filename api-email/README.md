@@ -34,6 +34,14 @@ Para usar o serviço **Secure** do CCProxy, defina `IMAP_PROXY_TIPO=http` e info
 
 ## Rodar e verificar
 
+Para testar com Gmail no Windows, crie um marcador dedicado, aplique-o ao e-mail de teste e rode este comando na raiz do projeto:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\iniciar-email.ps1
+```
+
+O assistente procura a chave do Firebase em Downloads, pede o UID, a caixa Gmail, o marcador e a senha de app. A senha é digitada em um campo oculto. Com a API aberta, o terminal informa quantas ordens foram criadas a cada minuto.
+
 Defina as variáveis no terminal ou na configuração do ambiente. Na raiz do repositório, rode em PowerShell:
 
 ```powershell
