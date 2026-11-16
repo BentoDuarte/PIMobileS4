@@ -1,5 +1,7 @@
 package com.example.pimobiles4.email;
 
+import jakarta.mail.AuthenticationFailedException;
+import jakarta.mail.FolderNotFoundException;
 import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,13 +61,17 @@ class ImportacaoController {
     private ImportadorEmail.Resultado executar() {
         try {
             var resultado = importador.importar();
-            if (resultado.ordensCriadas() > 0) {
-                LOG.info("Ordens criadas a partir de e-mail: {}", resultado.ordensCriadas());
+            if (!resultado.emAndamento()) {
+                LOG.info("Consulta ao Gmail/IMAP concluída. Ordens criadas: {}", resultado.ordensCriadas());
             }
             return resultado;
         } catch (InterruptedException erro) {
             Thread.currentThread().interrupt();
             LOG.warn("Importação de e-mail interrompida.");
+        } catch (AuthenticationFailedException erro) {
+            LOG.warn("Login IMAP recusado. Confira o endereço da caixa e a senha de app gerada nessa mesma conta.");
+        } catch (FolderNotFoundException erro) {
+            LOG.warn("Pasta IMAP não encontrada. Confira o nome do marcador configurado.");
         } catch (MessagingException erro) {
             String proxy = imap.proxyHost();
             String tipo = "http".equals(imap.proxyTipo()) ? "HTTP CONNECT" : "SOCKS5";
